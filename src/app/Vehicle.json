@@ -1,0 +1,52 @@
+[
+    {
+        "id": "document",
+        "name": "SGP4 route",
+        "description": "Route for a satellite object",
+        "version": "1.0",
+        "clock":       {
+            "interval": "20200302T225942Z/20200302T235942Z",
+            "currentTime": "20200302T225942Z"
+        }
+    },
+    {
+        "id": "907de8fc-2cfd-41ed-9ad8-1c81146ce7f7",
+        "name": "ISS",
+        "billboard":{
+            "image":"../assets/sat_icon.png"
+        },
+        "path": {
+            "width": 2,
+            "leadTime": 2700,
+            "trailTime": 2700,
+            "material": {
+                "polylineOutline": {
+                    "color": {
+                        "rgba": [
+                            0,
+                            128,
+                            0,
+                            255
+                        ]
+                    }
+                }
+            }
+        },
+        "position": {
+            "interpolationAlgorithm": "LAGRANGE",
+            "interpolationDegree": 5,
+            "referenceFrame": "INERTIAL",
+            "epoch": "20200302T225942Z",
+            "cartographicDegrees": [
+                0,
+                10,
+                35,
+                50000,
+                3600,
+                15,
+                45,
+                50000
+            ]
+        }
+    }
+]

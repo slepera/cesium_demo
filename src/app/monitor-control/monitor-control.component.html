@@ -1,0 +1,51 @@
+
+<div id="overlay">
+  <mat-toolbar class="flexSpaceBetween" color="primary">
+    <button mat-button (click)="SinmulateOrbit()" [color]="'success'" type="submit">
+      <mat-icon>satellite</mat-icon>
+    </button>
+    &nbsp;&nbsp;&nbsp;
+    <button mat-button (click)="SinmulateOrbitTimeTagged()" [color]="'success'" type="submit">
+      <mat-icon>play_circle_filled</mat-icon>
+    </button>
+    &nbsp;&nbsp;&nbsp;
+    <button mat-button routerLink="/" routerLinkActive="active" [color]="'success'" type="submit">
+      <mat-icon>home</mat-icon>
+    </button>
+    &nbsp;&nbsp;&nbsp;
+    <button mat-button (click)="webSocketConnect()" [color]="'success'" type="submit">
+      <mat-icon>svgIcon="socket"</mat-icon>
+    </button>
+    &nbsp;&nbsp;&nbsp;
+    <button mat-button (click)="closeConnection()" [color]="'success'" type="submit">
+      <mat-icon>satellite</mat-icon>
+    </button>
+    &nbsp;&nbsp;&nbsp;
+    <button mat-button (click)="startSending()" [color]="'success'" type="submit">
+      <mat-icon>play_arrow</mat-icon>
+    </button>
+    &nbsp;&nbsp;&nbsp;
+    <button mat-button (click)="stopSending()" [color]="'success'" type="submit">
+      <mat-icon>stop</mat-icon>
+    </button>
+  </mat-toolbar>
+</div>
+
+<div id="cesiumContainer" class="fullSize"></div>
+<div id="toolbar"></div>
+
+<video id="trailer" controls autoplay loop muted>
+  <source src="../../assets/Platform_edit_2.mp4" type="video/mp4">
+  Your browser does not support the <code>video</code> element.
+</video>
+
+
+
+<div>
+    <button routerLink="/" routerLinkActive="active"> Home </button>
+    <button (click)='webSocketConnect()'>Open connection</button>
+    <button (click)='closeConnection()'>Close connection</button>
+    <button (click)='startSending()'>Start</button> 
+    <button (click)='stopSending()'>Stop</button>
+</div>
+

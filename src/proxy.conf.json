@@ -1,0 +1,10 @@
+{
+    "/data": {
+      "target": "http://127.0.0.1:8000/polls",
+      "secure": true,
+      "changeOrigin": true,
+      "pathRewrite": {
+        "^/data": ""
+      }
+    }
+  }
