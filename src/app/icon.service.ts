@@ -4,6 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 export enum Icons {
   Open = 'socket',
+  Close = 'socket_off',
 }
 
 @Injectable({
