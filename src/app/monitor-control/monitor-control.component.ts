@@ -36,6 +36,7 @@ export class MonitorControlComponent implements OnInit {
     private _snackBar: MatSnackBar, private iconService: IconService ) { 
     this.property = new Cesium.SampledPositionProperty();
     this.property_2 = new Cesium.SampledPositionProperty();
+    this.iconService.registerIcons();
   }
 
   ngOnInit(): void {
@@ -52,7 +53,7 @@ export class MonitorControlComponent implements OnInit {
     scene.skyAtmosphere.show = true;
     scene.fog.enabled = false;
     scene.globe.showGroundAtmosphere = false;
-    this.iconService.registerIcons();
+    
     
     this.mViewer = viewer;
 
