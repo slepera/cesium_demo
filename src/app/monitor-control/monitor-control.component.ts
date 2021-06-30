@@ -9,6 +9,7 @@ import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
 import { IconService } from '../icon.service';
 import { ThemePalette } from '@angular/material/core';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 export interface Layer {
   name: string;
@@ -38,6 +39,8 @@ export class MonitorControlComponent implements OnInit {
   }
   private platform;
   private sar;
+  private multi;
+  private lidar;
   mViewer: any;
   lastPickedEntity: any;
   private property;
@@ -101,6 +104,7 @@ export class MonitorControlComponent implements OnInit {
 
 
     this.mViewer = viewer;
+
 
     if (!scene.pickPositionSupported) {
       window.alert('This browser does not support pickPosition.');
@@ -214,9 +218,6 @@ export class MonitorControlComponent implements OnInit {
     //Display a continuous orbit
     //viewer.dataSources.add(Cesium.CzmlDataSource.load(cz));
 
-
-
-
     //Platform
     this.platform = this.mViewer.entities.add({
       name: "platform",
@@ -237,20 +238,6 @@ export class MonitorControlComponent implements OnInit {
     );
     viewer.trackedEntity = this.platform;
 
-    //Sar image
-    this.sar = viewer.entities.add({
-      name: "sarImage",
-      polygon: {
-        hierarchy: Cesium.Cartesian3.fromDegreesArray([
-          13.756, 43.297086546037215,
-          13.856791325073828, 43.3211846037215,
-          13.909051325073828, 43.253086546037215,
-          13.803051325073828, 43.218086546037215,
-        ]),
-        height: 50,
-        material: "../../assets/SarImage.png",
-      }
-    })
 
     //Drone
     this.entity = viewer.entities.add({
@@ -262,6 +249,51 @@ export class MonitorControlComponent implements OnInit {
         scale: 50
       }
     });
+
+    this.sar = this.mViewer.entities.add({
+      name: "sarImage",
+      polygon: {
+        hierarchy: Cesium.Cartesian3.fromDegreesArray([
+          13.756, 43.297086546037215,
+          13.856791325073828, 43.3211846037215,
+          13.909051325073828, 43.253086546037215,
+          13.803051325073828, 43.218086546037215,
+        ]),
+        height: 50,
+        material: "../../assets/SarImage.png",
+      },
+      show: false
+    })
+
+    this.multi = this.mViewer.entities.add({
+      name: "seaImage",
+      polygon: {
+        hierarchy: Cesium.Cartesian3.fromDegreesArray([
+          13.756, 43.297086546037215,
+          13.856791325073828, 43.3211846037215,
+          13.909051325073828, 43.253086546037215,
+          13.803051325073828, 43.218086546037215,
+        ]),
+        height: 50,
+        material: "../../assets/offshore-oil.jpg",
+      },
+      show: false
+    })
+
+    this.lidar = this.mViewer.entities.add({
+      name: "seaImage",
+      polygon: {
+        hierarchy: Cesium.Cartesian3.fromDegreesArray([
+          13.756, 43.297086546037215,
+          13.856791325073828, 43.3211846037215,
+          13.909051325073828, 43.253086546037215,
+          13.803051325073828, 43.218086546037215,
+        ]),
+        height: 50,
+        material: "../../assets/SeaImagery.jpeg",
+      },
+      show: false
+    })
 
   }
 
@@ -379,6 +411,7 @@ export class MonitorControlComponent implements OnInit {
       }
     });
 
+
     entities.add({
       position: this.property_2,
       orientation: new Cesium.VelocityOrientationProperty(this.property_2),
@@ -450,4 +483,63 @@ export class MonitorControlComponent implements OnInit {
       }
     }
   }
+
+  showLayer(ob: MatCheckboxChange){
+  switch(ob.source.id){
+    case 'mat-checkbox-2':{
+      if(ob.checked === true){
+        this.sar.show = true;
+        /*
+        this.layer.sublayers.forEach(t => {
+          if (t.name !== 'SAR'){
+            t.completed = false
+          }
+          this.multi.show = false;
+          this.lidar.show = false;
+        } )
+        */
+      }else{
+        this.sar.show = false;
+      }
+      break
+    }
+    case 'mat-checkbox-3':{
+      if(ob.checked === true){
+        this.multi.show = true;
+        /*
+        this.layer.sublayers.forEach(t => {
+          if (t.name !== 'MULTI'){
+            t.completed = false
+          }
+        } )
+        this.sar.show = false;
+        this.lidar.show = false;
+        */
+      }else{
+        this.multi.show = false;
+      }
+      break
+    }
+    case 'mat-checkbox-4':{
+      if(ob.checked === true){
+        this.lidar.show = true;
+        /*
+        this.layer.sublayers.forEach(t => {
+          if (t.name !== 'LIDAR'){
+            t.completed = false
+          }
+        } )
+        this.multi.show = false;
+        this.sar.show = false;
+        */
+      }else{
+        this.lidar.show = false;
+      }
+      break
+    }
+  }
+
+  }
+  
+
 }

@@ -44,7 +44,8 @@
       <li *ngFor="let sublayer of layer.sublayers">
         <mat-checkbox [(ngModel)]="sublayer.completed"
                       [color]="sublayer.color"
-                      (ngModelChange)="updateAllComplete()">
+                      (ngModelChange)="updateAllComplete()"
+                      (change)="showLayer($event)">
           {{sublayer.name}}
         </mat-checkbox>
       </li>
