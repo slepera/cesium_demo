@@ -8,19 +8,30 @@ import cz from '../Vehicle.json';
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
 import { IconService } from '../icon.service';
+import { ThemePalette } from '@angular/material/core';
+
+export interface Layer {
+  name: string;
+  completed: boolean;
+  color: ThemePalette;
+  sublayers?: Layer[];
+}
 
 @Component({
   selector: 'app-monitor-control',
   templateUrl: './monitor-control.component.html',
   styleUrls: ['./monitor-control.component.css']
 })
+
+
+
 export class MonitorControlComponent implements OnInit {
   private entity;
   public subscription;
   public coord: Coord = {
     lat: 10,
     lon: 44.0503706,
-    alt:10,
+    alt: 10,
     heading: 0,
     pitch: 0,
     roll: 0
@@ -32,8 +43,42 @@ export class MonitorControlComponent implements OnInit {
   private property;
   private property_2;
 
-  constructor( private dronesService: DronesService, private dataManager: DataManagerService, 
-    private _snackBar: MatSnackBar, private iconService: IconService ) { 
+  layer: Layer = {
+    name: 'Layers',
+    completed: false,
+    color: 'primary',
+    sublayers: [
+      { name: 'SAR', completed: false, color: 'primary' },
+      { name: 'MULTI', completed: false, color: 'accent' },
+      { name: 'LIDAR', completed: false, color: 'warn' }
+    ]
+  };
+
+  allComplete: boolean = false;
+
+  updateAllComplete() {
+    this.allComplete = this.layer.sublayers != null && this.layer.sublayers.every(t => t.completed);
+    console.log("updateAllComplete");
+  }
+
+  someComplete(): boolean {
+    if (this.layer.sublayers == null) {
+      return false;
+    }
+    return this.layer.sublayers.filter(t => t.completed).length > 0 && !this.allComplete;
+  }
+
+  setAll(completed: boolean) {
+    this.allComplete = completed;
+    if (this.layer.sublayers == null) {
+      return;
+    }
+    this.layer.sublayers.forEach(t => t.completed = completed);
+  }
+
+
+  constructor(private dronesService: DronesService, private dataManager: DataManagerService,
+    private _snackBar: MatSnackBar, private iconService: IconService) {
     this.property = new Cesium.SampledPositionProperty();
     this.property_2 = new Cesium.SampledPositionProperty();
     this.iconService.registerIcons();
@@ -53,8 +98,8 @@ export class MonitorControlComponent implements OnInit {
     scene.skyAtmosphere.show = true;
     scene.fog.enabled = false;
     scene.globe.showGroundAtmosphere = false;
-    
-    
+
+
     this.mViewer = viewer;
 
     if (!scene.pickPositionSupported) {
@@ -93,89 +138,89 @@ export class MonitorControlComponent implements OnInit {
     scene.canvas.addEventListener('contextmenu', (event) => {
 
       event.preventDefault();
-      
+
       const mousePosition = new Cesium.Cartesian2(event.clientX, event.clientY);
-      
-      const selectedLocation = convertScreenPixelToLocation(mousePosition );
-      
+
+      const selectedLocation = convertScreenPixelToLocation(mousePosition);
+
       setMarkerInPos(selectedLocation);
-      
-      }, false);
-      function convertScreenPixelToLocation(mousePosition) {
-      
+
+    }, false);
+    function convertScreenPixelToLocation(mousePosition) {
+
       const ellipsoid = viewer.scene.globe.ellipsoid;
-      
+
       const cartesian = viewer.camera.pickEllipsoid(mousePosition, ellipsoid);
-      
+
       if (cartesian) {
-      
-      const cartographic = ellipsoid.cartesianToCartographic(cartesian);
-      
-      const longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(15);
-      
-      const latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(15);
-      
-      return {lat: Number(latitudeString),lng: Number(longitudeString)};
-      
+
+        const cartographic = ellipsoid.cartesianToCartographic(cartesian);
+
+        const longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(15);
+
+        const latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(15);
+
+        return { lat: Number(latitudeString), lng: Number(longitudeString) };
+
       } else {
-      
-      return null;
-      
+
+        return null;
+
       }
-      
-      }
-      function setMarkerInPos(position){
-      
+
+    }
+    function setMarkerInPos(position) {
+
       viewer.pickTranslucentDepth = true;
-      
+
       const locationMarker = viewer.entities.add({
-      
-      name : 'location',
-      
-      position : Cesium.Cartesian3.fromDegrees(position.lng, position.lat, 300),
-      
-      point : {
-      
-      pixelSize : 5,
-      
-      color : Cesium.Color.RED,
-      
-      outlineColor : Cesium.Color.WHITE,
-      
-      outlineWidth : 2
-      
-      },
-      
-      label : {
-      
-      text : ""+position.lng+','+position.lat,
-      
-      font : '14pt monospace',
-      
-      style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-      
-      outlineWidth : 2,
-      
-      verticalOrigin : Cesium.VerticalOrigin.BOTTOM,
-      
-      pixelOffset : new Cesium.Cartesian2(0, -9)
-      
-      }
-      
+
+        name: 'location',
+
+        position: Cesium.Cartesian3.fromDegrees(position.lng, position.lat, 300),
+
+        point: {
+
+          pixelSize: 5,
+
+          color: Cesium.Color.RED,
+
+          outlineColor: Cesium.Color.WHITE,
+
+          outlineWidth: 2
+
+        },
+
+        label: {
+
+          text: "" + position.lng + ',' + position.lat,
+
+          font: '14pt monospace',
+
+          style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+
+          outlineWidth: 2,
+
+          verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+
+          pixelOffset: new Cesium.Cartesian2(0, -9)
+
+        }
+
       });
-      
-      }
-    
+
+    }
+
     //Display a continuous orbit
     //viewer.dataSources.add(Cesium.CzmlDataSource.load(cz));
-    
+
 
 
 
     //Platform
     this.platform = this.mViewer.entities.add({
       name: "platform",
-      model:{
+      model: {
         uri: "../../assets/PlatformBlack.glb",
         scale: 0.5,
         minimumPixelSize: 128,
@@ -185,9 +230,9 @@ export class MonitorControlComponent implements OnInit {
         colorBlendAmount: 0.3
       }
     });
-    this.platform.position = new  Cesium.Cartesian3.fromDegrees(
+    this.platform.position = new Cesium.Cartesian3.fromDegrees(
       13.853051325073828,
-      43.318086546037215, 
+      43.318086546037215,
       -150
     );
     viewer.trackedEntity = this.platform;
@@ -195,22 +240,22 @@ export class MonitorControlComponent implements OnInit {
     //Sar image
     this.sar = viewer.entities.add({
       name: "sarImage",
-      polygon : {
-        hierarchy : Cesium.Cartesian3.fromDegreesArray([
-                                  13.756, 43.297086546037215,
-                                  13.856791325073828, 43.3211846037215,
-                                  13.909051325073828, 43.253086546037215,
-                                  13.803051325073828, 43.218086546037215,
-                                  ]),
-        height : 50,
-        material : "../../assets/SarImage.png",
-        }
+      polygon: {
+        hierarchy: Cesium.Cartesian3.fromDegreesArray([
+          13.756, 43.297086546037215,
+          13.856791325073828, 43.3211846037215,
+          13.909051325073828, 43.253086546037215,
+          13.803051325073828, 43.218086546037215,
+        ]),
+        height: 50,
+        material: "../../assets/SarImage.png",
+      }
     })
-    
+
     //Drone
     this.entity = viewer.entities.add({
       name: "drone",
-      model:{
+      model: {
         uri: "../../assets/CesiumDrone.glb",
         minimumPixelSize: 128,
         maximumScale: 50,
@@ -220,10 +265,10 @@ export class MonitorControlComponent implements OnInit {
 
   }
 
-  webSocketConnect(){
-     //Update drone position from websocket data
-     this.dataManager.connect();
-     this.subscription = this.dataManager.messages.subscribe(msg => {
+  webSocketConnect() {
+    //Update drone position from websocket data
+    this.dataManager.connect();
+    this.subscription = this.dataManager.messages.subscribe(msg => {
       this.coord.lat = +msg.lat;
       this.coord.lon = +msg.lon;
       this.coord.alt = +msg.alt;
@@ -233,15 +278,15 @@ export class MonitorControlComponent implements OnInit {
       this.dronesService.updatePosition(this.entity, this.coord);
     });
   }
-  startSending(){
+  startSending() {
     this.dataManager.startSending()
   }
 
-  stopSending(){
+  stopSending() {
     this.dataManager.stopSending()
   }
 
-  closeConnection(){
+  closeConnection() {
     this.dataManager.closeConnection()
   }
 
@@ -267,11 +312,11 @@ export class MonitorControlComponent implements OnInit {
     this.mViewer.timeline.zoomTo(this.mViewer.clock.startTime, this.mViewer.clock.stopTime);
     this.mViewer.clock.shouldAnimate = true;
   }
-  
+
   delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-  
+
   CalculatePositionSamples(point, endPoint, startTime, duration, intervalCount) {
 
     var deltaStep = duration / (intervalCount > 0 ? intervalCount : 1);

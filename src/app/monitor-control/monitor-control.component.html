@@ -29,6 +29,28 @@
       <mat-icon>stop</mat-icon>
     </button>
   </mat-toolbar>
+  <section class="checkbox-section ">
+  <span class="checkbox-margin">
+    <mat-checkbox
+                  [checked]="allComplete"
+                  [color]="layer.color"
+                  [indeterminate]="someComplete()"
+                  (change)="setAll($event.checked)">
+      {{layer.name}}
+    </mat-checkbox>
+  </span>
+<span class="checkbox-margin">
+  <ul>
+      <li *ngFor="let sublayer of layer.sublayers">
+        <mat-checkbox [(ngModel)]="sublayer.completed"
+                      [color]="sublayer.color"
+                      (ngModelChange)="updateAllComplete()">
+          {{sublayer.name}}
+        </mat-checkbox>
+      </li>
+    </ul>
+  </span>
+  </section>
 </div>
 
 <div id="cesiumContainer" class="fullSize"></div>
@@ -45,7 +67,7 @@
     <button routerLink="/" routerLinkActive="active"> Home </button>
     <button (click)='webSocketConnect()'>Open connection</button>
     <button (click)='closeConnection()'>Close connection</button>
-    <button (click)='startSending()'>Start</button> 
+    <button (click)='startSending()'>Start</button>
     <button (click)='stopSending()'>Stop</button>
 </div>
 
