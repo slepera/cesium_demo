@@ -45,6 +45,7 @@ export class MonitorControlComponent implements OnInit {
   lastPickedEntity: any;
   private property;
   private property_2;
+  public showSar = true;
 
   layer: Layer = {
     name: 'Layers',
@@ -101,8 +102,16 @@ export class MonitorControlComponent implements OnInit {
     scene.skyAtmosphere.show = true;
     scene.fog.enabled = false;
     scene.globe.showGroundAtmosphere = false;
-
-
+    const lat1 = 43.326;
+    const lon1 = 13.793;
+    const lat2 = 43.354;
+    const lon2 = 13.871;
+    const lat3 = 43.306;
+    const lon3 = 13.90;
+    const lat4 = 43.275;
+    const lon4 = 13.819;
+    
+    
     this.mViewer = viewer;
 
 
@@ -238,7 +247,6 @@ export class MonitorControlComponent implements OnInit {
     );
     viewer.trackedEntity = this.platform;
 
-
     //Drone
     this.entity = viewer.entities.add({
       name: "drone",
@@ -250,49 +258,99 @@ export class MonitorControlComponent implements OnInit {
       }
     });
 
-    this.sar = this.mViewer.entities.add({
+    this.sar = new Cesium.CustomDataSource('sar');
+    this.multi = new Cesium.CustomDataSource('multi');
+    this.lidar = new Cesium.CustomDataSource('lidar');
+    this.mViewer.dataSources.add(this.sar);
+    this.mViewer.dataSources.add(this.multi);
+    this.mViewer.dataSources.add(this.lidar);
+    this.sar.show = false;
+    this.multi.show = false;
+    this.lidar.show = false;
+
+    this.sar.entities.add({
       name: "sarImage",
       polygon: {
         hierarchy: Cesium.Cartesian3.fromDegreesArray([
-          13.756, 43.297086546037215,
-          13.856791325073828, 43.3211846037215,
-          13.909051325073828, 43.253086546037215,
-          13.803051325073828, 43.218086546037215,
+          lon1, lat1,
+          lon2, lat2,
+          lon3, lat3,
+          lon4, lat4        
         ]),
         height: 50,
-        material: "../../assets/SarImage.png",
+        material: new Cesium.ImageMaterialProperty({
+          image: "../../assets/SarImage.png",
+          alpha: 0.5,
+          transparent: true
+      })
       },
-      show: false
+      //show: false
     })
-
-    this.multi = this.mViewer.entities.add({
-      name: "seaImage",
+    
+    
+    this.multi.entities.add({
+      name: "seaImage1",
+      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+        start: Cesium.JulianDate.fromDate(new Date(2021, 6, 1)),
+        stop: Cesium.JulianDate.fromDate(new Date(2021, 6, 2))
+      })]),
       polygon: {
         hierarchy: Cesium.Cartesian3.fromDegreesArray([
-          13.756, 43.297086546037215,
-          13.856791325073828, 43.3211846037215,
-          13.909051325073828, 43.253086546037215,
-          13.803051325073828, 43.218086546037215,
+          lon1, lat1,
+          lon2, lat2,
+          lon3, lat3,
+          lon4, lat4  
         ]),
         height: 50,
         material: "../../assets/offshore-oil.jpg",
       },
-      show: false
+    })
+    var imageryLayers = this.mViewer.imageryLayers;
+    var layer = imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
+      url: "../../assets/SarImage.png",
+      rectangle: Cesium.Rectangle.fromDegrees(
+        13.82,
+        43.29,
+        13.88,
+        43.34
+      ),
+    }));
+    layer.alpha = Cesium.defaultValue(0.5, 0.5);
+    layer.show = Cesium.defaultValue(this.showSar, true);
+    
+    this.multi.entities.add({
+      name: "seaImage2",
+      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+        start: Cesium.JulianDate.fromDate(new Date(2021, 6, 2)),
+        stop: Cesium.JulianDate.fromDate(new Date(2021, 6, 3))
+      })]),
+      polygon: {
+        hierarchy: Cesium.Cartesian3.fromDegreesArray([
+          lon1, lat1,
+          lon2, lat2,
+          lon3, lat3,
+          lon4, lat4  
+        ]),
+        height: 50,
+        material: "../../assets/SarImage.png",
+      },
+      //show: false
     })
 
-    this.lidar = this.mViewer.entities.add({
+
+    this.lidar.entities.add({
       name: "seaImage",
       polygon: {
         hierarchy: Cesium.Cartesian3.fromDegreesArray([
-          13.756, 43.297086546037215,
-          13.856791325073828, 43.3211846037215,
-          13.909051325073828, 43.253086546037215,
-          13.803051325073828, 43.218086546037215,
+          lon1, lat1,
+          lon2, lat2,
+          lon3, lat3,
+          lon4, lat4  
         ]),
         height: 50,
         material: "../../assets/SeaImagery.jpeg",
       },
-      show: false
+      //show: false
     })
 
   }
@@ -489,15 +547,6 @@ export class MonitorControlComponent implements OnInit {
     case 'mat-checkbox-2':{
       if(ob.checked === true){
         this.sar.show = true;
-        /*
-        this.layer.sublayers.forEach(t => {
-          if (t.name !== 'SAR'){
-            t.completed = false
-          }
-          this.multi.show = false;
-          this.lidar.show = false;
-        } )
-        */
       }else{
         this.sar.show = false;
       }
@@ -506,15 +555,6 @@ export class MonitorControlComponent implements OnInit {
     case 'mat-checkbox-3':{
       if(ob.checked === true){
         this.multi.show = true;
-        /*
-        this.layer.sublayers.forEach(t => {
-          if (t.name !== 'MULTI'){
-            t.completed = false
-          }
-        } )
-        this.sar.show = false;
-        this.lidar.show = false;
-        */
       }else{
         this.multi.show = false;
       }
