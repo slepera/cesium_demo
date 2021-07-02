@@ -388,9 +388,6 @@ export class MonitorControlComponent implements OnInit {
     this.mViewer.clock.shouldAnimate = true;
   }
 
-  delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
 
   CalculatePositionSamples(point, endPoint, startTime, duration, intervalCount) {
 
@@ -472,26 +469,7 @@ export class MonitorControlComponent implements OnInit {
   }
   
   async SinmulateOrbit() {
-
-    var satellite = this.mViewer.entities.add({
-      name: 'SAT-1',
-      position: Cesium.Cartesian3.fromDegrees(0.0, 0.0, 1000000.0),
-      billboard: {
-        image: 'assets/satellite1-64.png'
-      }
-    });
-
-    let i = 0;
-
-    while (true) {
-      var position = Cesium.Cartesian3.fromDegrees(i, 0.0, 1000000.0);
-      satellite.position = position;
-      await this.delay(500);
-      i++;
-      if (i == 360) {
-        i = 0;
-      }
-    }
+    this.satService.simulateOrbit(this.mViewer);
   }
 
   showImages(ob: MatCheckboxChange){
