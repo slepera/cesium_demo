@@ -290,8 +290,8 @@ export class MonitorControlComponent implements OnInit {
     this.multi.entities.add({
       name: "seaImage1",
       availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
-        start: Cesium.JulianDate.fromDate(new Date(2021, 6, 1)),
-        stop: Cesium.JulianDate.fromDate(new Date(2021, 6, 2))
+        start: Cesium.JulianDate.fromDate(new Date(2021, 6, 3)),
+        stop: Cesium.JulianDate.fromDate(new Date(2021, 6, 4))
       })]),
       polygon: {
         hierarchy: Cesium.Cartesian3.fromDegreesArray([
