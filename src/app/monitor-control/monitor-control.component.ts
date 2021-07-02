@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { Cartesian3, ShadowMode } from 'cesium';
 import { Coord } from '../coord';
 import { DataManagerService } from '../data-manager.service';
 import { DronesService } from '../drones.service';
 import cz from '../Vehicle.json';
-import { MatIconRegistry } from "@angular/material/icon";
-import { DomSanitizer } from "@angular/platform-browser";
 import { IconService } from '../icon.service';
 import { ThemePalette } from '@angular/material/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { SatelliteService } from '../satellite.service';
 
 export interface Layer {
   name: string;
@@ -23,9 +21,6 @@ export interface Layer {
   templateUrl: './monitor-control.component.html',
   styleUrls: ['./monitor-control.component.css']
 })
-
-
-
 export class MonitorControlComponent implements OnInit {
   private entity;
   public subscription;
@@ -41,11 +36,13 @@ export class MonitorControlComponent implements OnInit {
   private sar;
   private multi;
   private lidar;
+  private sarLayer;
   mViewer: any;
   lastPickedEntity: any;
   private property;
   private property_2;
   public showSar = true;
+  public cone;
 
   layer: Layer = {
     name: 'Layers',
@@ -60,29 +57,8 @@ export class MonitorControlComponent implements OnInit {
 
   allComplete: boolean = false;
 
-  updateAllComplete() {
-    this.allComplete = this.layer.sublayers != null && this.layer.sublayers.every(t => t.completed);
-    console.log("updateAllComplete");
-  }
-
-  someComplete(): boolean {
-    if (this.layer.sublayers == null) {
-      return false;
-    }
-    return this.layer.sublayers.filter(t => t.completed).length > 0 && !this.allComplete;
-  }
-
-  setAll(completed: boolean) {
-    this.allComplete = completed;
-    if (this.layer.sublayers == null) {
-      return;
-    }
-    this.layer.sublayers.forEach(t => t.completed = completed);
-  }
-
-
   constructor(private dronesService: DronesService, private dataManager: DataManagerService,
-    private _snackBar: MatSnackBar, private iconService: IconService) {
+    private iconService: IconService, private satService: SatelliteService) {
     this.property = new Cesium.SampledPositionProperty();
     this.property_2 = new Cesium.SampledPositionProperty();
     this.iconService.registerIcons();
@@ -98,7 +74,8 @@ export class MonitorControlComponent implements OnInit {
       animation: true,
       timeline: true
     });
-    const scene = viewer.scene;
+    this.mViewer = viewer;
+    const scene = this.mViewer.scene;
     scene.skyAtmosphere.show = true;
     scene.fog.enabled = false;
     scene.globe.showGroundAtmosphere = false;
@@ -110,10 +87,6 @@ export class MonitorControlComponent implements OnInit {
     const lon3 = 13.90;
     const lat4 = 43.275;
     const lon4 = 13.819;
-    
-    
-    this.mViewer = viewer;
-
 
     if (!scene.pickPositionSupported) {
       window.alert('This browser does not support pickPosition.');
@@ -131,7 +104,7 @@ export class MonitorControlComponent implements OnInit {
           }
           _this.lastPickedEntity = pickedObject;
           pickedObject.id.billboard.image = 'assets/satellite1-128.png';
-          _this.openSnackBar(pickedObject.id.name);
+          _this.satService.openSnackBar(pickedObject.id.name);
         }
         else {
           pickedObject.id.billboard.image = 'assets/satellite1-64.png';
@@ -143,8 +116,8 @@ export class MonitorControlComponent implements OnInit {
         }
       }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-    this.AddEquatorial();
-    this.AddPolar();
+    this.satService.AddEquatorial(this.mViewer);
+    this.satService.AddPolar(this.mViewer);
     this.TimeSet();
 
     // Click event to get coordinates
@@ -257,6 +230,21 @@ export class MonitorControlComponent implements OnInit {
         scale: 50
       }
     });
+    
+    this.cone = viewer.entities.add({
+      name: "cone",
+      cylinder: {
+        HeightReference: Cesium.HeightReference.RELATIVE_TO_GROUND,
+        length: 100,
+        topRadius: 0,
+        bottomRadius: 100,
+        material: Cesium.Color.RED.withAlpha(.4),
+        outline: !0,
+        numberOfVerticalLines: 0,
+        outlineColor: Cesium.Color.RED.withAlpha(.8)
+      },
+      show: true
+    });
 
     this.sar = new Cesium.CustomDataSource('sar');
     this.multi = new Cesium.CustomDataSource('multi');
@@ -281,13 +269,24 @@ export class MonitorControlComponent implements OnInit {
         material: new Cesium.ImageMaterialProperty({
           image: "../../assets/SarImage.png",
           alpha: 0.5,
-          transparent: true
       })
       },
-      //show: false
     })
-    
-    
+
+    var imageryLayers = this.mViewer.imageryLayers;
+    this.sarLayer = imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
+      url: "../../assets/SarImage.png",
+      rectangle: Cesium.Rectangle.fromDegrees(
+        13.82,
+        43.29,
+        13.88,
+        43.34
+      ),
+    }));
+    this.sarLayer.alpha = Cesium.defaultValue(0.5, 0.5);
+    this.sarLayer.show = Cesium.defaultValue(this.showSar, true);
+    this.sarLayer.show = true;
+
     this.multi.entities.add({
       name: "seaImage1",
       availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
@@ -305,18 +304,6 @@ export class MonitorControlComponent implements OnInit {
         material: "../../assets/offshore-oil.jpg",
       },
     })
-    var imageryLayers = this.mViewer.imageryLayers;
-    var layer = imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
-      url: "../../assets/SarImage.png",
-      rectangle: Cesium.Rectangle.fromDegrees(
-        13.82,
-        43.29,
-        13.88,
-        43.34
-      ),
-    }));
-    layer.alpha = Cesium.defaultValue(0.5, 0.5);
-    layer.show = Cesium.defaultValue(this.showSar, true);
     
     this.multi.entities.add({
       name: "seaImage2",
@@ -334,7 +321,6 @@ export class MonitorControlComponent implements OnInit {
         height: 50,
         material: "../../assets/SarImage.png",
       },
-      //show: false
     })
 
 
@@ -350,7 +336,6 @@ export class MonitorControlComponent implements OnInit {
         height: 50,
         material: "../../assets/SeaImagery.jpeg",
       },
-      //show: false
     })
 
   }
@@ -365,7 +350,7 @@ export class MonitorControlComponent implements OnInit {
       this.coord.heading = 0;
       this.coord.pitch = 0;
       this.coord.roll = 0;
-      this.dronesService.updatePosition(this.entity, this.coord);
+      this.dronesService.updatePosition(this.entity, this.cone, this.coord);
     });
   }
   startSending() {
@@ -485,40 +470,7 @@ export class MonitorControlComponent implements OnInit {
       },
     });
   }
-
-
-  AddPolar() {
-    var positions_polar: Array<Cartesian3> = new Array<Cartesian3>();
-    for (let i = 0; i < 360; i++) {
-      positions_polar.push(Cesium.Cartesian3.fromDegrees(i, 0, 1000000));
-    }
-    this.mViewer.entities.add({
-      polyline: {
-        positions: positions_polar
-      }
-    });
-  }
-
-  AddEquatorial() {
-    var positions_equatorial: Array<Cartesian3> = new Array<Cartesian3>();
-    for (let i = 0; i < 360; i++) {
-      positions_equatorial.push(Cesium.Cartesian3.fromDegrees(0, i, 1000000));
-    }
-    this.mViewer.entities.add({
-      polyline: {
-        positions: positions_equatorial
-      }
-    });
-  }
-
-  openSnackBar(message: string) {
-    let config = new MatSnackBarConfig();
-    config.verticalPosition = 'top';
-    config.horizontalPosition = 'left';
-    config.duration = 0;
-    this._snackBar.open(message, 'Close', config);
-  }
-
+  
   async SinmulateOrbit() {
 
     var satellite = this.mViewer.entities.add({
@@ -542,19 +494,36 @@ export class MonitorControlComponent implements OnInit {
     }
   }
 
-  showLayer(ob: MatCheckboxChange){
+  showImages(ob: MatCheckboxChange){
   switch(ob.source.id){
     case 'mat-checkbox-2':{
       if(ob.checked === true){
         this.sar.show = true;
+        this.sarLayer.show = false;
+        
+        this.layer.sublayers.forEach(t => {
+          if (t.name !== 'SAR'){
+            t.completed = false
+          }
+        } )
+        this.lidar.show = false;
+        this.multi.show = false;
       }else{
         this.sar.show = false;
+        this.sarLayer.show = true;
       }
       break
     }
     case 'mat-checkbox-3':{
       if(ob.checked === true){
         this.multi.show = true;
+        this.layer.sublayers.forEach(t => {
+          if (t.name !== 'MULTI'){
+            t.completed = false
+          }
+        } )
+        this.lidar.show = false;
+        this.sar.show = false;
       }else{
         this.multi.show = false;
       }
@@ -563,7 +532,7 @@ export class MonitorControlComponent implements OnInit {
     case 'mat-checkbox-4':{
       if(ob.checked === true){
         this.lidar.show = true;
-        /*
+        
         this.layer.sublayers.forEach(t => {
           if (t.name !== 'LIDAR'){
             t.completed = false
@@ -571,7 +540,7 @@ export class MonitorControlComponent implements OnInit {
         } )
         this.multi.show = false;
         this.sar.show = false;
-        */
+        
       }else{
         this.lidar.show = false;
       }
@@ -581,5 +550,23 @@ export class MonitorControlComponent implements OnInit {
 
   }
   
+  updateAllComplete() {
+    this.allComplete = this.layer.sublayers != null && this.layer.sublayers.every(t => t.completed);
+    console.log("updateAllComplete");
+  }
 
+  someComplete(): boolean {
+    if (this.layer.sublayers == null) {
+      return false;
+    }
+    return this.layer.sublayers.filter(t => t.completed).length > 0 && !this.allComplete;
+  }
+
+  setAll(completed: boolean) {
+    this.allComplete = completed;
+    if (this.layer.sublayers == null) {
+      return;
+    }
+    this.layer.sublayers.forEach(t => t.completed = completed);
+  }
 }

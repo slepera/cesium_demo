@@ -45,7 +45,7 @@
         <mat-checkbox [(ngModel)]="sublayer.completed"
                       [color]="sublayer.color"
                       (ngModelChange)="updateAllComplete()"
-                      (change)="showLayer($event)">
+                      (change)="showImages($event)">
           {{sublayer.name}}
         </mat-checkbox>
       </li>
@@ -66,9 +66,5 @@
 
 <div>
     <button routerLink="/" routerLinkActive="active"> Home </button>
-    <button (click)='webSocketConnect()'>Open connection</button>
-    <button (click)='closeConnection()'>Close connection</button>
-    <button (click)='startSending()'>Start</button>
-    <button (click)='stopSending()'>Stop</button>
 </div>
 

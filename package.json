@@ -23,7 +23,7 @@
     "@angular/router": "~11.2.12",
     "angular-cesium": "0.0.71",
     "apexcharts": "^3.27.1",
-    "cesium": "^1.82.1",
+    "cesium": "^1.83.0",
     "ng-apexcharts": "^1.5.12",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
