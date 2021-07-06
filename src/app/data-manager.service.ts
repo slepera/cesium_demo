@@ -27,7 +27,7 @@ export class DataManagerService {
   public chartMessages: Subject<ChartMessage>;
   public droneMessages: Subject<DroneMessage>;
 
-  constructor(private http: HttpClient, private chartWsService: WebsocketService, private droneWsService: WebsocketService) {     
+  constructor(private http: HttpClient, private chartWsService: WebsocketService, private droneWsService: WebsocketService) {
   }
   droneConnect(){
     this.droneMessages = <Subject<DroneMessage>>this.droneWsService.connect(SOCKET_DRONE_URL).pipe(map(
@@ -64,11 +64,11 @@ export class DataManagerService {
 
   //Data receiving from WebSocket: start and stop methods
   startSending(){
-    this.droneWsService.send('Start');
+    this.droneWsService.send('start');
   }
-  
+
   stopSending(){
-    this.droneWsService.send('Stop');
+    this.droneWsService.send('stop');
   }
 
   closeConnection(){
