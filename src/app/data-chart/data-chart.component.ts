@@ -31,22 +31,6 @@ export class DataChartComponent {
   public subscription;
 
   constructor(private dataManager: DataManagerService) {
-    // WebSocket interno sfruttando rxjs/websocket
-    //const subject = webSocket('ws://127.0.0.1:8000/ws/data/');
-    /*subject.subscribe(
-      msg => {
-        console.log('message received: ' + JSON.stringify(msg)); // Called whenever there is a message from the server.
-        n = +JSON.parse(JSON.stringify(msg)).key2
-        this.chartOptions.series = [{
-          data: this.chartOptions.series[0].data.concat({
-            x: n,
-            y: JSON.parse(JSON.stringify(msg)).key1
-          })
-        }]
-      },
-      err => console.log(err), // Called if at any point WebSocket API signals some kind of error.
-      () => console.log('complete') // Called when connection is closed (for whatever reason).
-    );*/
 
     this.chartOptions = {
       series: [
@@ -95,13 +79,14 @@ export class DataChartComponent {
         size: 0,
         style: 'hollow',
       },
+      
       xaxis: {
         type: 'datetime',
-        tickAmount: 6,
       },
+      
       tooltip: {
         x: {
-          format: 'dd MMM yyyy'
+          format: 'dd MM yyyy'
         }
       },
       fill: {
@@ -113,25 +98,24 @@ export class DataChartComponent {
           stops: [0, 100]
         }
       },
+      datetimeUTC: true
       };
 
-    //this.id = setInterval(() => {
-    //  this.updateSeries();
-    //}, 3000);
     
 // WebSocket usando il servizio websocket.service e data-manager
-    this.subscription = dataManager.messages.subscribe(msg => {
-      console.log("Data: " + msg.lat);
-      console.log("Time: " + msg.lon);
-      n = +msg.lat
-      this.chartOptions.series = [{
-        data: this.chartOptions.series[0].data.concat({
-          x: n,
-          y: msg.lon
-        }
-        )
-      }]
-    });
+this.dataManager.chartConnect();
+this.subscription = dataManager.chartMessages.subscribe(msg => {
+    console.log("Data: " + msg.y);
+    console.log("Time: " + msg.x);
+    n = +msg.x
+    this.chartOptions.series = [{
+      data: this.chartOptions.series[0].data.concat({
+        x: n,
+        y: msg.y
+      }
+      )
+    }]
+  });
 
   }
 

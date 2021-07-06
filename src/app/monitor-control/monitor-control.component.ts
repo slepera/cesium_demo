@@ -342,8 +342,8 @@ export class MonitorControlComponent implements OnInit {
 
   webSocketConnect() {
     //Update drone position from websocket data
-    this.dataManager.connect();
-    this.subscription = this.dataManager.messages.subscribe(msg => {
+    this.dataManager.droneConnect();
+     this.subscription = this.dataManager.droneMessages.subscribe(msg => {
       this.coord.lat = +msg.lat;
       this.coord.lon = +msg.lon;
       this.coord.alt = +msg.alt;
