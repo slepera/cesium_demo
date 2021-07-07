@@ -23,7 +23,7 @@ const SOCKET_DRONE_URL = 'ws://localhost:8080/drone_web_socket';
   providedIn: 'root',
 })
 export class DataManagerService {
-  public restApiEndpoint: string = 'http://127.0.0.1:8000/polls/';
+  public restApiEndpoint: string = 'http://localhost:8080/video';
   public chartMessages: Subject<ChartMessage>;
   public droneMessages: Subject<DroneMessage>;
 
@@ -58,7 +58,7 @@ export class DataManagerService {
 
 
   // GET request
-  getData(){
+  getVideo(){
     return this.http.get(this.restApiEndpoint);
   }
 

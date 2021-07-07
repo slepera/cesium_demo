@@ -119,21 +119,5 @@ this.subscription = dataManager.chartMessages.subscribe(msg => {
 
   }
 
-  // Questo metodo per utilizzare le chiamate http con il backend 'mysite'
-  public updateSeries() {
-    let n: number;
-    this.dataManager.getData().subscribe((data: string[]) => {
-      n = +data['key2']
-      this.chartOptions.series = [{
-        data: this.chartOptions.series[0].data.concat({
-          x: n,
-          y: data['key1']
-        }
-        )
-      }]
-    }
-    );
-  }
-
 
 }
