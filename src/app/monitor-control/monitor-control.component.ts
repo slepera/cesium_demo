@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Coord } from '../coord';
 import { DataManagerService } from '../data-manager.service';
@@ -22,6 +22,10 @@ export interface Layer {
   styleUrls: ['./monitor-control.component.css']
 })
 export class MonitorControlComponent implements OnInit {
+  @ViewChild("videoPlayer", { static: false }) videoplayer: ElementRef;
+  isPlay: boolean = false;
+
+  
   private entity;
   public subscription;
   public coord: Coord = {
@@ -340,6 +344,17 @@ export class MonitorControlComponent implements OnInit {
 
   }
 
+  
+  playVideo() {
+    var myVideo: any = document.getElementById("trailer");
+    if (myVideo.paused) myVideo.play();
+  }
+
+  pauseVideo() {
+    var myVideo: any = document.getElementById("trailer");
+    if (myVideo.played) myVideo.pause();
+  }
+
   webSocketConnect() {
     //Update drone position from websocket data
     this.dataManager.droneConnect();
@@ -355,10 +370,14 @@ export class MonitorControlComponent implements OnInit {
   }
   startSending() {
     this.dataManager.startSending()
+    var myVideo: any = document.getElementById("trailer");
+    if (myVideo.paused) myVideo.play();
   }
 
   stopSending() {
     this.dataManager.stopSending()
+    var myVideo: any = document.getElementById("trailer");
+    if (myVideo.played) myVideo.pause();
   }
 
   closeConnection() {
