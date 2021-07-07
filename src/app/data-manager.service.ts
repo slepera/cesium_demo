@@ -34,10 +34,10 @@ export class DataManagerService {
       (response: MessageEvent): DroneMessage => {
         let data = JSON.parse(response.data);
         return {
-          lat: data.lat,
-          lon: data.lon,
-          alt: data.alt,
-          time: data.time
+          lat: data.drone_msg.lat,
+          lon: data.drone_msg.lon,
+          alt: data.drone_msg.alt,
+          time: data.drone_msg.time
         };
       }
     ));

@@ -25,8 +25,8 @@ export class MonitorControlComponent implements OnInit {
   private entity;
   public subscription;
   public coord: Coord = {
-    lat: 10,
-    lon: 44.0503706,
+    lat: 44.0503706,
+    lon: 10,
     alt: 10,
     heading: 0,
     pitch: 0,
@@ -230,7 +230,7 @@ export class MonitorControlComponent implements OnInit {
         scale: 50
       }
     });
-    
+
     this.cone = viewer.entities.add({
       name: "cone",
       cylinder: {
@@ -263,7 +263,7 @@ export class MonitorControlComponent implements OnInit {
           lon1, lat1,
           lon2, lat2,
           lon3, lat3,
-          lon4, lat4        
+          lon4, lat4
         ]),
         height: 50,
         material: new Cesium.ImageMaterialProperty({
@@ -298,13 +298,13 @@ export class MonitorControlComponent implements OnInit {
           lon1, lat1,
           lon2, lat2,
           lon3, lat3,
-          lon4, lat4  
+          lon4, lat4
         ]),
         height: 50,
         material: "../../assets/offshore-oil.jpg",
       },
     })
-    
+
     this.multi.entities.add({
       name: "seaImage2",
       availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
@@ -316,7 +316,7 @@ export class MonitorControlComponent implements OnInit {
           lon1, lat1,
           lon2, lat2,
           lon3, lat3,
-          lon4, lat4  
+          lon4, lat4
         ]),
         height: 50,
         material: "../../assets/SarImage.png",
@@ -331,7 +331,7 @@ export class MonitorControlComponent implements OnInit {
           lon1, lat1,
           lon2, lat2,
           lon3, lat3,
-          lon4, lat4  
+          lon4, lat4
         ]),
         height: 50,
         material: "../../assets/SeaImagery.jpeg",
@@ -343,7 +343,7 @@ export class MonitorControlComponent implements OnInit {
   webSocketConnect() {
     //Update drone position from websocket data
     this.dataManager.droneConnect();
-     this.subscription = this.dataManager.droneMessages.subscribe(msg => {
+    this.subscription = this.dataManager.droneMessages.subscribe(msg => {
       this.coord.lat = +msg.lat;
       this.coord.lon = +msg.lon;
       this.coord.alt = +msg.alt;
@@ -467,7 +467,7 @@ export class MonitorControlComponent implements OnInit {
       },
     });
   }
-  
+
   async SinmulateOrbit() {
     this.satService.simulateOrbit(this.mViewer);
   }
@@ -478,7 +478,7 @@ export class MonitorControlComponent implements OnInit {
       if(ob.checked === true){
         this.sar.show = true;
         this.sarLayer.show = false;
-        
+
         this.layer.sublayers.forEach(t => {
           if (t.name !== 'SAR'){
             t.completed = false
@@ -510,7 +510,7 @@ export class MonitorControlComponent implements OnInit {
     case 'mat-checkbox-4':{
       if(ob.checked === true){
         this.lidar.show = true;
-        
+
         this.layer.sublayers.forEach(t => {
           if (t.name !== 'LIDAR'){
             t.completed = false
@@ -518,7 +518,7 @@ export class MonitorControlComponent implements OnInit {
         } )
         this.multi.show = false;
         this.sar.show = false;
-        
+
       }else{
         this.lidar.show = false;
       }
@@ -527,7 +527,7 @@ export class MonitorControlComponent implements OnInit {
   }
 
   }
-  
+
   updateAllComplete() {
     this.allComplete = this.layer.sublayers != null && this.layer.sublayers.every(t => t.completed);
     console.log("updateAllComplete");

@@ -10,13 +10,13 @@ export class DronesService {
 
   updatePosition(entity, cone, coordinates: Coord){
     var position = new  Cesium.Cartesian3.fromDegrees(
-      coordinates.lat,
       coordinates.lon,
+      coordinates.lat,
       coordinates.alt
     );
     var conePosition = new  Cesium.Cartesian3.fromDegrees(
-      coordinates.lat,
       coordinates.lon,
+      coordinates.lat,
       coordinates.alt/2
     );
     var hpr = new Cesium.HeadingPitchRoll(coordinates.heading, coordinates.pitch, coordinates.roll);
