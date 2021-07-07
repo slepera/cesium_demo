@@ -64,4 +64,29 @@ export class SatelliteService {
       }
     }
   }
+
+  handleSatellite(scene, _this, handler){
+    handler.setInputAction(function (click) {
+      var pickedObject = scene.pick(click.position);
+      if (Cesium.defined(pickedObject) && (pickedObject.id.billboard)) {
+        console.log(pickedObject.id.name);
+        if (pickedObject.id.billboard.image._value == 'assets/satellite1-64.png') {
+          if ((_this.lastPickedEntity != null) && (_this.lastPickedEntity.id.name != pickedObject.id.name)) {
+            _this.lastPickedEntity.id.billboard.image = 'assets/satellite1-64.png';
+          }
+          _this.lastPickedEntity = pickedObject;
+          pickedObject.id.billboard.image = 'assets/satellite1-128.png';
+          _this.satService.openSnackBar(pickedObject.id.name);
+        }
+        else {
+          pickedObject.id.billboard.image = 'assets/satellite1-64.png';
+        }
+      }
+      else {
+        if (_this.lastPickedEntity != null) {
+          _this.lastPickedEntity.id.billboard.image = 'assets/satellite1-64.png';
+        }
+      }
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+  }
 }
