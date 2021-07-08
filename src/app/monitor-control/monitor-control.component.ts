@@ -46,6 +46,7 @@ export class MonitorControlComponent implements OnInit {
   private property_2;
   public showSar = true;
   public cone;
+  public dataCircle;
   private startDate: Date;
   private stopDate: Date;
 
@@ -105,81 +106,81 @@ export class MonitorControlComponent implements OnInit {
     this.TimeSet();
 
     // Click event to get coordinates
-    scene.canvas.addEventListener('contextmenu', (event) => {
+    // scene.canvas.addEventListener('contextmenu', (event) => {
 
-      event.preventDefault();
+    //   event.preventDefault();
 
-      const mousePosition = new Cesium.Cartesian2(event.clientX, event.clientY);
+    //   const mousePosition = new Cesium.Cartesian2(event.clientX, event.clientY);
 
-      const selectedLocation = convertScreenPixelToLocation(mousePosition);
+    //   const selectedLocation = convertScreenPixelToLocation(mousePosition);
 
-      setMarkerInPos(selectedLocation);
+    //   setMarkerInPos(selectedLocation);
 
-    }, false);
-    function convertScreenPixelToLocation(mousePosition) {
+    // }, false);
+    // function convertScreenPixelToLocation(mousePosition) {
 
-      const ellipsoid = viewer.scene.globe.ellipsoid;
+    //   const ellipsoid = viewer.scene.globe.ellipsoid;
 
-      const cartesian = viewer.camera.pickEllipsoid(mousePosition, ellipsoid);
+    //   const cartesian = viewer.camera.pickEllipsoid(mousePosition, ellipsoid);
 
-      if (cartesian) {
+    //   if (cartesian) {
 
-        const cartographic = ellipsoid.cartesianToCartographic(cartesian);
+    //     const cartographic = ellipsoid.cartesianToCartographic(cartesian);
 
-        const longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(15);
+    //     const longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(15);
 
-        const latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(15);
+    //     const latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(15);
 
-        return { lat: Number(latitudeString), lng: Number(longitudeString) };
+    //     return { lat: Number(latitudeString), lng: Number(longitudeString) };
 
-      } else {
+    //   } else {
 
-        return null;
+    //     return null;
 
-      }
+    //   }
 
-    }
-    function setMarkerInPos(position) {
+    // }
+    // function setMarkerInPos(position) {
 
-      viewer.pickTranslucentDepth = true;
+    //   viewer.pickTranslucentDepth = true;
 
-      const locationMarker = viewer.entities.add({
+    //   const locationMarker = viewer.entities.add({
 
-        name: 'location',
+    //     name: 'location',
 
-        position: Cesium.Cartesian3.fromDegrees(position.lng, position.lat, 300),
+    //     position: Cesium.Cartesian3.fromDegrees(position.lng, position.lat, 300),
 
-        point: {
+    //     point: {
 
-          pixelSize: 5,
+    //       pixelSize: 5,
 
-          color: Cesium.Color.RED,
+    //       color: Cesium.Color.RED,
 
-          outlineColor: Cesium.Color.WHITE,
+    //       outlineColor: Cesium.Color.WHITE,
 
-          outlineWidth: 2
+    //       outlineWidth: 2
 
-        },
+    //     },
 
-        label: {
+    //     label: {
 
-          text: "" + position.lng + ',' + position.lat,
+    //       text: "" + position.lng + ',' + position.lat,
 
-          font: '14pt monospace',
+    //       font: '14pt monospace',
 
-          style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+    //       style: Cesium.LabelStyle.FILL_AND_OUTLINE,
 
-          outlineWidth: 2,
+    //       outlineWidth: 2,
 
-          verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+    //       verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
 
-          pixelOffset: new Cesium.Cartesian2(0, -9)
+    //       pixelOffset: new Cesium.Cartesian2(0, -9)
 
-        }
+    //     }
 
-      });
+    //   });
 
-    }
+    // }
 
     //Display a continuous orbit
     //viewer.dataSources.add(Cesium.CzmlDataSource.load(cz));
@@ -229,6 +230,7 @@ export class MonitorControlComponent implements OnInit {
       },
       show: true
     });
+
 
     this.sar = new Cesium.CustomDataSource('sar');
     this.multi = new Cesium.CustomDataSource('multi');
@@ -457,7 +459,24 @@ export class MonitorControlComponent implements OnInit {
       this.coord.heading = 0;
       this.coord.pitch = 0;
       this.coord.roll = 0;
-      this.dronesService.updatePosition(this.entity, this.cone, this.coord);
+      var colorNum = Math.random();
+      var colorSel;
+      if (colorNum<0.33){
+        colorSel = Cesium.Color.YELLOW.withAlpha(0.5);
+      } else if (colorNum<0.67){
+        colorSel = Cesium.Color.ORANGE.withAlpha(0.5);
+      } else {
+        colorSel = Cesium.Color.RED.withAlpha(0.5);
+      }
+      var dataCircle = this.mViewer.entities.add({
+        name: "Red ellipse on surface",
+        ellipse: {
+          semiMinorAxis: 200.0,
+          semiMajorAxis: 200.0,
+          material: colorSel,
+        },
+      });
+      this.dronesService.updatePosition(this.entity, this.cone, dataCircle, this.coord);
     });
   }
   startSending() {
@@ -482,8 +501,8 @@ export class MonitorControlComponent implements OnInit {
     var startTime = new Cesium.JulianDate;
     var endTime = new Cesium.JulianDate;
     Cesium.JulianDate.now(currentTime);
-    Cesium.JulianDate.addDays(currentTime, -30, startTime);
-    Cesium.JulianDate.addDays(currentTime, 30, endTime);
+    Cesium.JulianDate.addDays(currentTime, -15, startTime);
+    Cesium.JulianDate.addDays(currentTime, 15, endTime);
     var clock = new Cesium.Clock({
       startTime: startTime,
       currentTime: currentTime,
@@ -542,7 +561,7 @@ export class MonitorControlComponent implements OnInit {
 
 
     this.CalculatePositionSamples(point, finalPoint, start, duration, frequency);
-
+    
     var target = entities.add({
       name: 'SAT-1' + Math.random(),
       position: this.property,

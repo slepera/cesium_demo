@@ -8,7 +8,7 @@ export class DronesService {
 
   constructor() { }
 
-  updatePosition(entity, cone, coordinates: Coord){
+  updatePosition(entity, cone, dataCircle, coordinates: Coord){
     var position = new  Cesium.Cartesian3.fromDegrees(
       coordinates.lon,
       coordinates.lat,
@@ -19,6 +19,11 @@ export class DronesService {
       coordinates.lat,
       coordinates.alt/2
     );
+    var circlePosition = new  Cesium.Cartesian3.fromDegrees(
+      coordinates.lon,
+      coordinates.lat,
+      0
+    );
     var hpr = new Cesium.HeadingPitchRoll(coordinates.heading, coordinates.pitch, coordinates.roll);
     var orientation = Cesium.Transforms.headingPitchRollQuaternion(
       position,
@@ -26,6 +31,7 @@ export class DronesService {
     );
     entity.position = position;
     entity.orientation = orientation;
+    dataCircle.position = circlePosition;
     cone.position = conePosition;
     cone.cylinder.length = coordinates.alt;
     cone.cylinder.bottomRadius = coordinates.alt/2;
