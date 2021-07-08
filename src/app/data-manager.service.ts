@@ -12,6 +12,7 @@ export interface DroneMessage {
 }
 
 export interface ChartMessage {
+  msg_type: string;
   x: string;
   y: string;
 }
@@ -49,6 +50,7 @@ export class DataManagerService {
         let data = JSON.parse(response.data);
         console.log(data);
         return {
+          msg_type: data.chart_msg.msg_type,
           x: data.chart_msg.x,
           y: data.chart_msg.y
         };
