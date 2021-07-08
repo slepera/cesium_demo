@@ -46,6 +46,8 @@ export class MonitorControlComponent implements OnInit {
   private property_2;
   public showSar = true;
   public cone;
+  private startDate: Date;
+  private stopDate: Date;
 
   layer: Layer = {
     name: 'Layers',
@@ -238,8 +240,31 @@ export class MonitorControlComponent implements OnInit {
     this.multi.show = false;
     this.lidar.show = false;
 
+    this.startDate = new Date();
+    this.stopDate = new Date();
+
+    this.stopDate.setDate( this.startDate.getDate() + 1 )
+
+    /* var imageryLayers = this.mViewer.imageryLayers;
+    this.sarLayer = imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
+      url: "../../assets/SarImage.png",
+      rectangle: Cesium.Rectangle.fromDegrees(
+        13.82,
+        43.29,
+        13.88,
+        43.34
+      ),
+    }));
+    this.sarLayer.alpha = Cesium.defaultValue(0.5, 0.5);
+    this.sarLayer.show = Cesium.defaultValue(this.showSar, true);
+    this.sarLayer.show = true; */
+
     this.sar.entities.add({
       name: "sarImage",
+      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+        start: Cesium.JulianDate.fromDate(this.startDate),
+        stop: Cesium.JulianDate.fromDate(this.stopDate)
+      })]),
       polygon: {
         hierarchy: Cesium.Cartesian3.fromDegreesArray([
           lon1, lat1,
@@ -255,25 +280,11 @@ export class MonitorControlComponent implements OnInit {
       },
     })
 
-    var imageryLayers = this.mViewer.imageryLayers;
-    this.sarLayer = imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
-      url: "../../assets/SarImage.png",
-      rectangle: Cesium.Rectangle.fromDegrees(
-        13.82,
-        43.29,
-        13.88,
-        43.34
-      ),
-    }));
-    this.sarLayer.alpha = Cesium.defaultValue(0.5, 0.5);
-    this.sarLayer.show = Cesium.defaultValue(this.showSar, true);
-    this.sarLayer.show = true;
-
     this.multi.entities.add({
-      name: "seaImage1",
+      name: "seaImage",
       availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
-        start: Cesium.JulianDate.fromDate(new Date(2021, 6, 3)),
-        stop: Cesium.JulianDate.fromDate(new Date(2021, 6, 4))
+        start: Cesium.JulianDate.fromDate(this.startDate),
+        stop: Cesium.JulianDate.fromDate(this.stopDate)
       })]),
       polygon: {
         hierarchy: Cesium.Cartesian3.fromDegreesArray([
@@ -287,27 +298,12 @@ export class MonitorControlComponent implements OnInit {
       },
     })
 
-    this.multi.entities.add({
-      name: "seaImage2",
-      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
-        start: Cesium.JulianDate.fromDate(new Date(2021, 6, 2)),
-        stop: Cesium.JulianDate.fromDate(new Date(2021, 6, 3))
-      })]),
-      polygon: {
-        hierarchy: Cesium.Cartesian3.fromDegreesArray([
-          lon1, lat1,
-          lon2, lat2,
-          lon3, lat3,
-          lon4, lat4
-        ]),
-        height: 50,
-        material: "../../assets/SarImage.png",
-      },
-    })
-
-
     this.lidar.entities.add({
-      name: "seaImage",
+      name: "oilImage",
+      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+        start: Cesium.JulianDate.fromDate(this.startDate),
+        stop: Cesium.JulianDate.fromDate(this.stopDate)
+      })]),
       polygon: {
         hierarchy: Cesium.Cartesian3.fromDegreesArray([
           lon1, lat1,
@@ -319,7 +315,125 @@ export class MonitorControlComponent implements OnInit {
         material: "../../assets/SeaImagery.jpeg",
       },
     })
+    
+    this.startDate.setDate( this.startDate.getDate() + 1 )
+    this.stopDate.setDate( this.stopDate.getDate() + 1 )
 
+    this.sar.entities.add({
+      name: "sarImage1",
+      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+        start: Cesium.JulianDate.fromDate(this.startDate),
+        stop: Cesium.JulianDate.fromDate(this.stopDate)
+      })]),
+      polygon: {
+        hierarchy: Cesium.Cartesian3.fromDegreesArray([
+          lon1, lat1,
+          lon2, lat2,
+          lon3, lat3,
+          lon4, lat4
+        ]),
+        height: 50,
+        material: new Cesium.ImageMaterialProperty({
+          image: "../../assets/SarImage_DAY1.png",
+          alpha: 0.5,
+      })
+      },
+    })
+
+    this.multi.entities.add({
+      name: "seaImage1",
+      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+        start: Cesium.JulianDate.fromDate(this.startDate),
+        stop: Cesium.JulianDate.fromDate(this.stopDate)
+      })]),
+      polygon: {
+        hierarchy: Cesium.Cartesian3.fromDegreesArray([
+          lon1, lat1,
+          lon2, lat2,
+          lon3, lat3,
+          lon4, lat4
+        ]),
+        height: 50,
+        material: "../../assets/offshore-oil_DAY1.jpg",
+      },
+    })
+
+    this.lidar.entities.add({
+      name: "oilImage1",
+      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+        start: Cesium.JulianDate.fromDate(this.startDate),
+        stop: Cesium.JulianDate.fromDate(this.stopDate)
+      })]),
+      polygon: {
+        hierarchy: Cesium.Cartesian3.fromDegreesArray([
+          lon1, lat1,
+          lon2, lat2,
+          lon3, lat3,
+          lon4, lat4
+        ]),
+        height: 50,
+        material: "../../assets/SeaImagery_DAY1.jpeg",
+      },
+    })
+
+    this.startDate.setDate( this.startDate.getDate() + 1 )
+    this.stopDate.setDate( this.stopDate.getDate() + 1 )
+    this.sar.entities.add({
+      name: "sarImage2",
+      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+        start: Cesium.JulianDate.fromDate(this.startDate),
+        stop: Cesium.JulianDate.fromDate(this.stopDate)
+      })]),
+      polygon: {
+        hierarchy: Cesium.Cartesian3.fromDegreesArray([
+          lon1, lat1,
+          lon2, lat2,
+          lon3, lat3,
+          lon4, lat4
+        ]),
+        height: 50,
+        material: new Cesium.ImageMaterialProperty({
+          image: "../../assets/SarImage_DAY2.png",
+          alpha: 0.5,
+      })
+      },
+    })
+
+    this.multi.entities.add({
+      name: "seaImage2",
+      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+        start: Cesium.JulianDate.fromDate(this.startDate),
+        stop: Cesium.JulianDate.fromDate(this.stopDate)
+      })]),
+      polygon: {
+        hierarchy: Cesium.Cartesian3.fromDegreesArray([
+          lon1, lat1,
+          lon2, lat2,
+          lon3, lat3,
+          lon4, lat4
+        ]),
+        height: 50,
+        material: "../../assets/offshore-oil_DAY2.jpg",
+      },
+    })
+
+    this.lidar.entities.add({
+      name: "oilImage2",
+      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+        start: Cesium.JulianDate.fromDate(this.startDate),
+        stop: Cesium.JulianDate.fromDate(this.stopDate)
+      })]),
+      polygon: {
+        hierarchy: Cesium.Cartesian3.fromDegreesArray([
+          lon1, lat1,
+          lon2, lat2,
+          lon3, lat3,
+          lon4, lat4
+        ]),
+        height: 50,
+        material: "../../assets/SeaImagery_DAY2.jpg",
+      },
+    })
   }
 
   
@@ -474,7 +588,7 @@ export class MonitorControlComponent implements OnInit {
     case 'mat-checkbox-2':{
       if(ob.checked === true){
         this.sar.show = true;
-        this.sarLayer.show = false;
+        //this.sarLayer.show = false;
 
         this.layer.sublayers.forEach(t => {
           if (t.name !== 'SAR'){
@@ -485,7 +599,7 @@ export class MonitorControlComponent implements OnInit {
         this.multi.show = false;
       }else{
         this.sar.show = false;
-        this.sarLayer.show = true;
+        //this.sarLayer.show = true;
       }
       break
     }
