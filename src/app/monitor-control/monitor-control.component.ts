@@ -222,8 +222,8 @@ export class MonitorControlComponent implements OnInit {
         HeightReference: Cesium.HeightReference.RELATIVE_TO_GROUND,
         length: 100,
         topRadius: 0,
-        bottomRadius: 100,
-        material: Cesium.Color.RED.withAlpha(.4),
+        bottomRadius: 200,
+        material: Cesium.Color.BLUEVIOLET.withAlpha(.4),
         outline: !0,
         numberOfVerticalLines: 0,
         outlineColor: Cesium.Color.RED.withAlpha(.8)

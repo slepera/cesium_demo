@@ -34,6 +34,6 @@ export class DronesService {
     dataCircle.position = circlePosition;
     cone.position = conePosition;
     cone.cylinder.length = coordinates.alt;
-    cone.cylinder.bottomRadius = coordinates.alt/2;
+    //cone.cylinder.bottomRadius = coordinates.alt/2;
   }
 }
