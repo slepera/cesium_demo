@@ -24,7 +24,7 @@ export class MonitorControlComponent implements OnInit {
   @ViewChild("videoPlayer", { static: false }) videoplayer: ElementRef;
   isPlay: boolean = false;
 
-  
+
   private entity;
   public subscription;
   public coord: Coord = {
@@ -317,7 +317,7 @@ export class MonitorControlComponent implements OnInit {
         material: "../../assets/SeaImagery.jpeg",
       },
     })
-    
+
     this.startDate.setDate( this.startDate.getDate() + 1 )
     this.stopDate.setDate( this.stopDate.getDate() + 1 )
 
@@ -438,7 +438,7 @@ export class MonitorControlComponent implements OnInit {
     })
   }
 
-  
+
   playVideo() {
     var myVideo: any = document.getElementById("trailer");
     if (myVideo.paused) myVideo.play();
@@ -473,6 +473,7 @@ export class MonitorControlComponent implements OnInit {
         ellipse: {
           semiMinorAxis: 200.0,
           semiMajorAxis: 200.0,
+          height: 70,
           material: colorSel,
         },
       });
@@ -550,18 +551,18 @@ export class MonitorControlComponent implements OnInit {
     var start = Cesium.JulianDate.fromDate(new Date());
 
     var point = {
-      lat: -75.0,
-      lon: 12.0
+      lat: -35.0,
+      lon: 14.0
     };
     var finalPoint = {
-      lat: +90.0,
-      lon: 12.0
+      lat: +75.0,
+      lon: 14.0
     };
 
 
 
     this.CalculatePositionSamples(point, finalPoint, start, duration, frequency);
-    
+
     var target = entities.add({
       name: 'SAT-1' + Math.random(),
       position: this.property,
@@ -589,7 +590,7 @@ export class MonitorControlComponent implements OnInit {
         HeightReference: Cesium.HeightReference.RELATIVE_TO_GROUND,
         length: 100000,
         topRadius: 0,
-        bottomRadius: 100000 / 2,
+        bottomRadius: 50000 / 2,
         material: Cesium.Color.RED.withAlpha(.4),
         outline: !0,
         numberOfVerticalLines: 0,

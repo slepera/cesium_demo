@@ -22,7 +22,7 @@ export class DronesService {
     var circlePosition = new  Cesium.Cartesian3.fromDegrees(
       coordinates.lon,
       coordinates.lat,
-      0
+      70
     );
     var hpr = new Cesium.HeadingPitchRoll(coordinates.heading, coordinates.pitch, coordinates.roll);
     var orientation = Cesium.Transforms.headingPitchRollQuaternion(

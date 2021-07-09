@@ -48,6 +48,11 @@ export class DataChartComponent {
           autoScaleYaxis: true
         }
       },
+      title: {
+        text: 'Average Temperature',
+        align: 'left'
+      },
+
       annotations: {
         yaxis: [{
           borderColor: '#999',
@@ -84,7 +89,6 @@ export class DataChartComponent {
       xaxis: {
         type: 'datetime',
       },
-
       tooltip: {
         x: {
           format: 'dd MM yyyy'
@@ -117,6 +121,10 @@ export class DataChartComponent {
         zoom: {
           autoScaleYaxis: true
         }
+      },
+      title: {
+        text: 'Average Humidity',
+        align: 'left'
       },
       annotations: {
         yaxis: [{
