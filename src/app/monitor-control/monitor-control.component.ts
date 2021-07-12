@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { Coord } from '../coord';
 import { DataManagerService } from '../data-manager.service';
 import { DronesService } from '../drones.service';
@@ -7,6 +7,10 @@ import { IconService } from '../icon.service';
 import { ThemePalette } from '@angular/material/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { SatelliteService } from '../satellite.service';
+import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
+import { CdkPortal, ComponentPortal, Portal } from '@angular/cdk/portal';
+import { DataChartComponent } from '../data-chart/data-chart.component';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 export interface Layer {
   name: string;
@@ -49,6 +53,7 @@ export class MonitorControlComponent implements OnInit {
   public dataCircle;
   private startDate: Date;
   private stopDate: Date;
+  public useDefault: false;
 
   layer: Layer = {
     name: 'Layers',
@@ -62,9 +67,14 @@ export class MonitorControlComponent implements OnInit {
   };
 
   allComplete: boolean = false;
+  nextPosition: number = 0;
+  chartOverlayRef: OverlayRef;
+
+  @ViewChildren(CdkPortal) templatePortals: 
+  QueryList<Portal<any>>;
 
   constructor(private dronesService: DronesService, private dataManager: DataManagerService,
-    private iconService: IconService, private satService: SatelliteService) {
+    private iconService: IconService, private satService: SatelliteService, public overlay: Overlay, public viewContainerRef: ViewContainerRef) {
     this.property = new Cesium.SampledPositionProperty();
     this.property_2 = new Cesium.SampledPositionProperty();
     this.iconService.registerIcons();
@@ -93,6 +103,8 @@ export class MonitorControlComponent implements OnInit {
     const lon3 = 13.90;
     const lat4 = 43.275;
     const lon4 = 13.819;
+    var myVideo: any = document.getElementById("trailer");
+    myVideo.hidden = true;
 
     if (!scene.pickPositionSupported) {
       window.alert('This browser does not support pickPosition.');
@@ -605,7 +617,7 @@ export class MonitorControlComponent implements OnInit {
 
   showImages(ob: MatCheckboxChange){
   switch(ob.source.id){
-    case 'mat-checkbox-2':{
+    case 'mat-checkbox-1':{
       if(ob.checked === true){
         this.sar.show = true;
         //this.sarLayer.show = false;
@@ -623,7 +635,7 @@ export class MonitorControlComponent implements OnInit {
       }
       break
     }
-    case 'mat-checkbox-3':{
+    case 'mat-checkbox-2':{
       if(ob.checked === true){
         this.multi.show = true;
         this.layer.sublayers.forEach(t => {
@@ -638,7 +650,7 @@ export class MonitorControlComponent implements OnInit {
       }
       break
     }
-    case 'mat-checkbox-4':{
+    case 'mat-checkbox-3':{
       if(ob.checked === true){
         this.lidar.show = true;
 
@@ -677,5 +689,40 @@ export class MonitorControlComponent implements OnInit {
       return;
     }
     this.layer.sublayers.forEach(t => t.completed = completed);
+  }
+
+
+  public toggle(event: MatSlideToggleChange) {
+    console.log('toggle', event.checked);
+    if (event.checked){
+      this.openChart()
+    }else{
+      this.closeChartPanel();
+    }
+}
+
+  public toggleVideo(event: MatSlideToggleChange){
+    var myVideo: any = document.getElementById("trailer");
+    if (event.checked){
+      myVideo.hidden = false;
+    }else{
+      myVideo.hidden = true;
+    }
+  }
+
+
+  openChart() {
+    let config = new OverlayConfig();
+
+    config.positionStrategy = this.overlay.position()
+        .global()
+        .right(`50px`)
+        .top(`50px`);
+    this.chartOverlayRef = this.overlay.create(config);
+    this.chartOverlayRef.attach(new ComponentPortal(DataChartComponent, this.viewContainerRef));
+  }
+
+  closeChartPanel() {
+    this.chartOverlayRef.dispose();
   }
 }

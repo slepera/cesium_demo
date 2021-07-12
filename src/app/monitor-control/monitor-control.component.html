@@ -1,16 +1,16 @@
 
 <div id="overlay">
   <mat-toolbar class="flexSpaceBetween" color="primary">
+    <button mat-button routerLink="/" routerLinkActive="active" [color]="'success'" type="submit">
+      <mat-icon>home</mat-icon>
+    </button>
+    &nbsp;&nbsp;&nbsp;
     <button mat-button (click)="SinmulateOrbit()" [color]="'success'" type="submit">
       <mat-icon>satellite</mat-icon>
     </button>
     &nbsp;&nbsp;&nbsp;
     <button mat-button (click)="SinmulateOrbitTimeTagged()" [color]="'success'" type="submit">
       <mat-icon>play_circle_filled</mat-icon>
-    </button>
-    &nbsp;&nbsp;&nbsp;
-    <button mat-button routerLink="/" routerLinkActive="active" [color]="'success'" type="submit">
-      <mat-icon>home</mat-icon>
     </button>
     &nbsp;&nbsp;&nbsp;
     <button mat-button (click)="webSocketConnect()" [color]="'success'" type="submit">
@@ -36,30 +36,26 @@
     <button mat-button (click)="pauseVideo()" [color]="'success'" type="submit">
       <mat-icon>pause_circle</mat-icon>
     </button>
-  </mat-toolbar>
-  <section class="checkbox-section ">
-  <span class="checkbox-margin">
-    <mat-checkbox
-                  [checked]="allComplete"
-                  [color]="layer.color"
-                  [indeterminate]="someComplete()"
-                  (change)="setAll($event.checked)">
-      {{layer.name}}
-    </mat-checkbox>
-  </span>
-<span class="checkbox-margin">
-  <ul>
-      <li *ngFor="let sublayer of layer.sublayers">
-        <mat-checkbox [(ngModel)]="sublayer.completed"
+    &nbsp;&nbsp;&nbsp;
+    <button mat-button [matMenuTriggerFor]="menu" [color]="'success'" type="submit">Layers</button>
+      <mat-menu #menu="matMenu">
+        <li *ngFor="let sublayer of layer.sublayers">
+          <mat-checkbox [(ngModel)]="sublayer.completed"
                       [color]="sublayer.color"
                       (ngModelChange)="updateAllComplete()"
                       (change)="showImages($event)">
-          {{sublayer.name}}
-        </mat-checkbox>
-      </li>
-    </ul>
-  </span>
-  </section>
+            {{sublayer.name}}
+          </mat-checkbox>
+        </li>
+      </mat-menu>
+      &nbsp;&nbsp;&nbsp;
+      <mat-slide-toggle (change)="toggle($event)" [color]="'success'" type="submit" [labelPosition]="'before'"> Chart
+      </mat-slide-toggle>
+      &nbsp;&nbsp;&nbsp;
+      <mat-slide-toggle (change)="toggleVideo($event)" [color]="'success'" type="submit" [labelPosition]="'before'"> Streaming
+      </mat-slide-toggle>
+  </mat-toolbar>
+  
 </div>
 
 <div id="cesiumContainer" class="fullSize"></div>
@@ -69,7 +65,6 @@
   <source src="http://localhost:8080/video" type="video/mp4">
   Your browser does not support the <code>video</code> element.
 </video>
-
 
 
 <div>

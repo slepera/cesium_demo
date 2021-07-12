@@ -20,6 +20,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
+import { PortalModule } from '@angular/cdk/portal';
+import { OverlayModule } from '@angular/cdk/overlay';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatMenuModule }  from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -43,8 +47,12 @@ import { FormsModule } from '@angular/forms';
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    FormsModule
+    FormsModule,
+    PortalModule,
+    MatSlideToggleModule,
+    MatMenuModule
   ],
+  exports: [OverlayModule],
   providers: [WebsocketService],
   bootstrap: [AppComponent]
 })
