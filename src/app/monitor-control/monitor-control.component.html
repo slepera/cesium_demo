@@ -38,7 +38,7 @@
     </button>
     &nbsp;&nbsp;&nbsp;
     <button mat-button [matMenuTriggerFor]="menu" [color]="'success'" type="submit">Layers</button>
-      <mat-menu #menu="matMenu">
+      <mat-menu #menu="matMenu" class="customize">
         <li *ngFor="let sublayer of layer.sublayers">
           <mat-checkbox [(ngModel)]="sublayer.completed"
                       [color]="sublayer.color"
@@ -65,9 +65,4 @@
   <source src="http://localhost:8080/video" type="video/mp4">
   Your browser does not support the <code>video</code> element.
 </video>
-
-
-<div>
-    <button routerLink="/" routerLinkActive="active"> Home </button>
-</div>
 

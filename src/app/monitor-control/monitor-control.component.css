@@ -41,20 +41,14 @@
   color: #fff;
 }
 
-
-.checkbox-section {
-  background-color: rgba(0, 128, 0, 0.507);
+::ng-deep .customize {
+  background: rgba(0, 128, 0, 0.507);
   color: #fff;
-  margin-top: 5px;
-  margin-left: 15px;
-  margin-right: 5px;
-  margin-bottom: 5px;
-  height: 100px;
-  width: 150px;
 }
 
-.checkbox-margin {
-  margin: 0 12px;
+li {
+  list-style-type: none;
+  margin-left:  8px;
 }
 
 ul {
