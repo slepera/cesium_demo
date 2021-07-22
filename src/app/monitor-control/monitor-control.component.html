@@ -5,6 +5,8 @@
       <mat-icon>home</mat-icon>
     </button>
     &nbsp;&nbsp;&nbsp;
+    <button mat-button [matMenuTriggerFor]="menu_satellite" [color]="'success'" type="submit">Satellite</button>
+    <mat-menu #menu_satellite="matMenu" class="customize">
     <button mat-button (click)="SinmulateOrbit()" [color]="'success'" type="submit">
       <mat-icon>satellite</mat-icon>
     </button>
@@ -12,7 +14,10 @@
     <button mat-button (click)="SinmulateOrbitTimeTagged()" [color]="'success'" type="submit">
       <mat-icon>play_circle_filled</mat-icon>
     </button>
+    </mat-menu>
     &nbsp;&nbsp;&nbsp;
+    <button mat-button [matMenuTriggerFor]="menu_drone" [color]="'success'" type="submit">Drone</button>
+    <mat-menu #menu_drone="matMenu" class="customize">
     <button mat-button (click)="webSocketConnect()" [color]="'success'" type="submit">
       <mat-icon svgIcon="socket"></mat-icon>
     </button>
@@ -29,16 +34,9 @@
       <mat-icon>stop</mat-icon>
     </button>
     &nbsp;&nbsp;&nbsp;
-    <button mat-button (click)="playVideo()" [color]="'success'" type="submit">
-      <mat-icon>play_circle</mat-icon>
-    </button>
-    &nbsp;&nbsp;&nbsp;
-    <button mat-button (click)="pauseVideo()" [color]="'success'" type="submit">
-      <mat-icon>pause_circle</mat-icon>
-    </button>
-    &nbsp;&nbsp;&nbsp;
-    <button mat-button [matMenuTriggerFor]="menu" [color]="'success'" type="submit">Layers</button>
-      <mat-menu #menu="matMenu" class="customize">
+    </mat-menu>
+    <button mat-button [matMenuTriggerFor]="menu_layers" [color]="'success'" type="submit">Layers</button>
+      <mat-menu #menu_layers="matMenu" class="customize">
         <li *ngFor="let sublayer of layer.sublayers">
           <mat-checkbox [(ngModel)]="sublayer.completed"
                       [color]="sublayer.color"
@@ -48,14 +46,28 @@
           </mat-checkbox>
         </li>
       </mat-menu>
+    <button mat-button [matMenuTriggerFor]="menu_chart" [color]="'success'" type="submit">Chart</button>
+    <mat-menu #menu_chart="matMenu" class="customize">
       &nbsp;&nbsp;&nbsp;
-      <mat-slide-toggle (change)="toggle($event)" [color]="'success'" type="submit" [labelPosition]="'before'"> Chart
-      </mat-slide-toggle>
+      <mat-slide-toggle (change)="toggle($event)" [color]="'success'" type="submit" [labelPosition]="'before'"></mat-slide-toggle>
       &nbsp;&nbsp;&nbsp;
-      <mat-slide-toggle (change)="toggleVideo($event)" [color]="'success'" type="submit" [labelPosition]="'before'"> Streaming
-      </mat-slide-toggle>
+    </mat-menu>
+      <button mat-button [matMenuTriggerFor]="menu_video" [color]="'success'" type="submit">Video</button>
+      <mat-menu #menu_video="matMenu" class="customize">
+        &nbsp;&nbsp;&nbsp;
+        <mat-slide-toggle (change)="toggleVideo($event)" [color]="'success'" type="submit" [labelPosition]="'before'"></mat-slide-toggle>
+        &nbsp;&nbsp;&nbsp;
+        <button mat-button (click)="playVideo()" [color]="'success'" type="submit">
+          <mat-icon>play_circle</mat-icon>
+        </button>
+        &nbsp;&nbsp;&nbsp;
+        <button mat-button (click)="pauseVideo()" [color]="'success'" type="submit">
+          <mat-icon>pause_circle</mat-icon>
+        </button>
+        &nbsp;&nbsp;&nbsp;
+      </mat-menu>
   </mat-toolbar>
-  
+
 </div>
 
 <div id="cesiumContainer" class="fullSize"></div>
