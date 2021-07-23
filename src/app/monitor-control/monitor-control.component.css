@@ -36,6 +36,15 @@
   color: rgba(255, 255, 255, 0);
 }
 
+.my-button{
+  width: 180px!important;
+  min-width: unset!important;
+}
+
+h2{
+  text-align: center;
+}
+
 .mat-success {
   background-color: rgba(0, 128, 0, 0.507);
   color: #fff;

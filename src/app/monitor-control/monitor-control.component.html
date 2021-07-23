@@ -53,26 +53,77 @@
         </li>
       </mat-menu>
     &nbsp;&nbsp;&nbsp;
-    <button mat-button [matMenuTriggerFor]="menu_chart" [color]="'success'" type="submit">Chart</button>
-    <mat-menu #menu_chart="matMenu" class="customize">
-      &nbsp;&nbsp;&nbsp;
-      <mat-slide-toggle (change)="toggle($event)" [color]="'success'" type="submit" [labelPosition]="'before'"></mat-slide-toggle>
-      &nbsp;&nbsp;&nbsp;
+    <button mat-button class="my-button" [matMenuTriggerFor]="menu_env" [color]="'success'" type="submit">Environmental Monitoring</button>
+    <mat-menu #menu_env="matMenu" class="customize">
+      <h2>Weather: </h2>
+      <li>
+        Temperature (°C):
+      </li>
+      <li>
+        Umidity (%):
+      </li>
+      <li>
+        Pression (hPa):
+      </li>
+      <li>
+        UV:
+      </li>
+      <li>
+        Wind speed (km/s):
+      </li>
+        <li>
+          <mat-slide-toggle (change)="toggle($event)" [color]="'success'" type="submit" [labelPosition]="'before'">Chart</mat-slide-toggle>
+        </li>
+        &nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;
+      <h2>Water: </h2>
+      <li>
+        Temperature (°C):
+      </li>
+      <li>
+        Salinity (%):
+      </li>
+      <li>
+        Ph:
+      </li>
+        <li>
+          <mat-slide-toggle (change)="toggle($event)" [color]="'success'" type="submit" [labelPosition]="'before'">Chart</mat-slide-toggle>
+        </li>
+    </mat-menu>
+    &nbsp;&nbsp;&nbsp;
+    <button mat-button class="my-button" [matMenuTriggerFor]="menu_struct" [color]="'success'" type="submit">Structural Monitoring</button>
+    <mat-menu #menu_struct="matMenu" class="customize">
     </mat-menu>
     &nbsp;&nbsp;&nbsp;
       <button mat-button [matMenuTriggerFor]="menu_video" [color]="'success'" type="submit">Video</button>
       <mat-menu #menu_video="matMenu" class="customize">
+        <li>
+          &nbsp;&nbsp;&nbsp;
+          <mat-slide-toggle (change)="toggleVideo($event)" [color]="'success'" type="submit" [labelPosition]="'before'">UAV</mat-slide-toggle>
+          &nbsp;&nbsp;&nbsp;
+          <button mat-button (click)="playVideo()" [color]="'success'" type="submit">
+            <mat-icon>play_circle</mat-icon>
+          </button>
+          &nbsp;&nbsp;&nbsp;
+          <button mat-button (click)="pauseVideo()" [color]="'success'" type="submit">
+            <mat-icon>pause_circle</mat-icon>
+          </button>
+          &nbsp;&nbsp;&nbsp;
+        </li>
         &nbsp;&nbsp;&nbsp;
-        <mat-slide-toggle (change)="toggleVideo($event)" [color]="'success'" type="submit" [labelPosition]="'before'"></mat-slide-toggle>
-        &nbsp;&nbsp;&nbsp;
-        <button mat-button (click)="playVideo()" [color]="'success'" type="submit">
-          <mat-icon>play_circle</mat-icon>
-        </button>
-        &nbsp;&nbsp;&nbsp;
-        <button mat-button (click)="pauseVideo()" [color]="'success'" type="submit">
-          <mat-icon>pause_circle</mat-icon>
-        </button>
-        &nbsp;&nbsp;&nbsp;
+        <li>
+          &nbsp;&nbsp;&nbsp;
+          <mat-slide-toggle (change)="toggleVideo($event)" [color]="'success'" type="submit" [labelPosition]="'before'">UMS</mat-slide-toggle>
+          &nbsp;&nbsp;&nbsp;
+          <button mat-button (click)="playVideo()" [color]="'success'" type="submit">
+            <mat-icon>play_circle</mat-icon>
+          </button>
+          &nbsp;&nbsp;&nbsp;
+          <button mat-button (click)="pauseVideo()" [color]="'success'" type="submit">
+            <mat-icon>pause_circle</mat-icon>
+          </button>
+          &nbsp;&nbsp;&nbsp;
+        </li>
       </mat-menu>
   </mat-toolbar>
 
@@ -81,7 +132,8 @@
 <div id="cesiumContainer" class="fullSize"></div>
 <div id="toolbar"></div>
 
-<video id="trailer" controls muted>
+
+<video id="trailer" muted controls>
   <source src="http://localhost:8080/video" type="video/mp4">
   Your browser does not support the <code>video</code> element.
 </video>
