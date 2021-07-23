@@ -43,27 +43,6 @@ export class SatelliteService {
     this._snackBar.open(message, 'Close', config);
   }
 
-  async simulateOrbit(viewer){
-    var satellite = viewer.entities.add({
-      name: 'SAT-1',
-      position: Cesium.Cartesian3.fromDegrees(0.0, 0.0, 1000000.0),
-      billboard: {
-        image: 'assets/satellite1-64.png'
-      }
-    });
-
-    let i = 0;
-
-    while (true) {
-      var position = Cesium.Cartesian3.fromDegrees(i, 0.0, 1000000.0);
-      satellite.position = position;
-      await this.delay(500);
-      i++;
-      if (i == 360) {
-        i = 0;
-      }
-    }
-  }
 
   handleSatellite(scene, _this, handler){
     handler.setInputAction(function (click) {

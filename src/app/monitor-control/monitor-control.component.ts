@@ -46,8 +46,6 @@ export class MonitorControlComponent implements OnInit {
   private sarLayer;
   mViewer: any;
   lastPickedEntity: any;
-  private property;
-  private property_2;
   public showSar = true;
   public cone;
   public dataCircle;
@@ -75,8 +73,6 @@ export class MonitorControlComponent implements OnInit {
 
   constructor(private dronesService: DronesService, private dataManager: DataManagerService,
     private iconService: IconService, private satService: SatelliteService, public overlay: Overlay, public viewContainerRef: ViewContainerRef) {
-    this.property = new Cesium.SampledPositionProperty();
-    this.property_2 = new Cesium.SampledPositionProperty();
     this.iconService.registerIcons();
   }
 
@@ -215,7 +211,7 @@ export class MonitorControlComponent implements OnInit {
       43.318086546037215,
       -150
     );
-    viewer.trackedEntity = this.platform;
+    //viewer.trackedEntity = this.platform;
 
     //Drone
     this.entity = viewer.entities.add({
@@ -526,93 +522,66 @@ export class MonitorControlComponent implements OnInit {
     this.mViewer.clock.stopTime = clock.stopTime;
     this.mViewer.clock.currentTime = clock.currentTime;
     this.mViewer.clock.clockRange = clock.clockRange;
-    this.mViewer.clock.multiplier = 10 * 10;
+    this.mViewer.clock.multiplier = 1;
     this.mViewer.timeline.zoomTo(this.mViewer.clock.startTime, this.mViewer.clock.stopTime);
     this.mViewer.clock.shouldAnimate = true;
   }
 
 
-  CalculatePositionSamples(point, endPoint, startTime, duration, intervalCount) {
-
-    var deltaStep = duration / (intervalCount > 0 ? intervalCount : 1);
-
-    var delta = {
-      lon: (endPoint.lon - point.lon) / intervalCount,
-      lat: (endPoint.lat - point.lat) / intervalCount
-    };
-
-    for (var since = 0; since <= duration; since += deltaStep) {
-      this.property.addSample(
-        Cesium.JulianDate.addSeconds(startTime, since, new Cesium.JulianDate()),
-        Cesium.Cartesian3.fromDegrees(point.lon += delta.lon, point.lat += delta.lat, 100000.0)
-      );
-      this.property_2.addSample(
-        Cesium.JulianDate.addSeconds(startTime, since, new Cesium.JulianDate()),
-        Cesium.Cartesian3.fromDegrees(point.lon, point.lat, 50000.0)
-      );
-    }
-    return;
-  }
 
   SinmulateOrbitTimeTagged() {
     var entities = this.mViewer.entities;
+    var ttPos;
+    var ttPosCone;
+    var i = 0;
+    ttPos = new Cesium.SampledPositionProperty();
+    ttPosCone = new Cesium.SampledPositionProperty();
+    var ele;
+    this.dataManager.getOrbit("ciao").subscribe(val => {
+      val['positions'].forEach(element => {
+        ttPos.addSample(Cesium.JulianDate.fromDate(new Date(element.time*1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromDegrees(element.lon, element.lat, element.ele));
+        ttPosCone.addSample(Cesium.JulianDate.fromDate(new Date(element.time*1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromDegrees(element.lon, element.lat, element.ele/2));
+      })
+      console.log(ttPos);
+      ele = val['positions'][0].ele;
+      entities.add({
+        name: 'SAT-1' + Math.random(),
+        position: ttPos,
+        billboard: {
+          image: 'assets/satellite1-64.png'
+        },
+        orientation: new Cesium.VelocityOrientationProperty(ttPos),
+        path: {
+          resolution: 1,
+          material: new Cesium.PolylineGlowMaterialProperty({
+            glowPower: 0.1,
+            color: Cesium.Color.RED
+          }),
+          width: 5,
+          trailTime: 10000,
+          leadTime: 0
+        }
+      });
+  
+      entities.add({
+        position: ttPosCone,
+        orientation: new Cesium.VelocityOrientationProperty(ttPosCone),
+        cylinder: {
+          HeightReference: Cesium.HeightReference.RELATIVE_TO_GROUND,
+          length: ele,
+          topRadius: 0,
+          bottomRadius: ele / 10,
+          material: Cesium.Color.RED.withAlpha(.4),
+          outline: !0,
+          numberOfVerticalLines: 0,
+          outlineColor: Cesium.Color.RED.withAlpha(.8)
+        },
+      });
+    }
+     
+    );
 
-    var duration = 10000;
-    var frequency = 100;
-
-    var start = Cesium.JulianDate.fromDate(new Date());
-
-    var point = {
-      lat: -35.0,
-      lon: 14.0
-    };
-    var finalPoint = {
-      lat: +75.0,
-      lon: 14.0
-    };
-
-
-
-    this.CalculatePositionSamples(point, finalPoint, start, duration, frequency);
-
-    var target = entities.add({
-      name: 'SAT-1' + Math.random(),
-      position: this.property,
-      billboard: {
-        image: 'assets/satellite1-64.png'
-      },
-      orientation: new Cesium.VelocityOrientationProperty(this.property),
-      path: {
-        resolution: 1,
-        material: new Cesium.PolylineGlowMaterialProperty({
-          glowPower: 0.1,
-          color: Cesium.Color.RED
-        }),
-        width: 5,
-        trailTime: duration,
-        leadTime: 0
-      }
-    });
-
-
-    entities.add({
-      position: this.property_2,
-      orientation: new Cesium.VelocityOrientationProperty(this.property_2),
-      cylinder: {
-        HeightReference: Cesium.HeightReference.RELATIVE_TO_GROUND,
-        length: 100000,
-        topRadius: 0,
-        bottomRadius: 50000 / 2,
-        material: Cesium.Color.RED.withAlpha(.4),
-        outline: !0,
-        numberOfVerticalLines: 0,
-        outlineColor: Cesium.Color.RED.withAlpha(.8)
-      },
-    });
-  }
-
-  async SinmulateOrbit() {
-    this.satService.simulateOrbit(this.mViewer);
+    
   }
 
   showImages(ob: MatCheckboxChange){

@@ -24,7 +24,8 @@ const SOCKET_DRONE_URL = 'ws://localhost:8080/drone_web_socket';
   providedIn: 'root',
 })
 export class DataManagerService {
-  public restApiEndpoint: string = 'http://localhost:8080/video';
+  public videoEndpoint: string = 'http://localhost:8080/video';
+  public orbitEndPoint: string = 'http://localhost:8080/orbit/';
   public chartMessages: Subject<ChartMessage>;
   public droneMessages: Subject<DroneMessage>;
 
@@ -61,7 +62,11 @@ export class DataManagerService {
 
   // GET request
   getVideo(){
-    return this.http.get(this.restApiEndpoint);
+    return this.http.get(this.videoEndpoint);
+  }
+
+  getOrbit(id: string){
+    return this.http.get(this.orbitEndPoint + id);
   }
 
   //Data receiving from WebSocket: start and stop methods

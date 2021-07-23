@@ -7,13 +7,9 @@
     &nbsp;&nbsp;&nbsp;
     <button mat-button [matMenuTriggerFor]="menu_satellite" [color]="'success'" type="submit">Satellite</button>
     <mat-menu #menu_satellite="matMenu" class="customize">
-      &nbsp;&nbsp;&nbsp;
-    <button mat-button (click)="SinmulateOrbit()" [color]="'success'" type="submit">
-      <mat-icon>satellite</mat-icon>
-    </button>
     &nbsp;&nbsp;&nbsp;
     <button mat-button (click)="SinmulateOrbitTimeTagged()" [color]="'success'" type="submit">
-      <mat-icon>play_circle_filled</mat-icon>
+      <mat-icon>satellite</mat-icon>
     </button>
     &nbsp;&nbsp;&nbsp;
     </mat-menu>
