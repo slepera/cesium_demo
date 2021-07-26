@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
 import { WebsocketService } from './websocket.service';
 import { Observable, Subject } from "rxjs";
-import { map } from 'rxjs/operators';
+import { map, share } from 'rxjs/operators';
+import { GaugeComponent } from './gauge/gauge.component';
 
 export interface DroneMessage {
   lat: string;
@@ -29,7 +30,7 @@ export class DataManagerService {
   public chartMessages: Subject<ChartMessage>;
   public droneMessages: Subject<DroneMessage>;
 
-  constructor(private http: HttpClient, private chartWsService: WebsocketService, private droneWsService: WebsocketService) {
+  constructor(private http: HttpClient, private chartWsService: WebsocketService, private droneWsService: WebsocketService, /* private gaugeComponent: GaugeComponent */) {
   }
   droneConnect(){
     this.droneMessages = <Subject<DroneMessage>>this.droneWsService.connect(SOCKET_DRONE_URL).pipe(map(
@@ -46,10 +47,13 @@ export class DataManagerService {
   }
 
   chartConnect(){
+    console.log("Chart Connect");
     this.chartMessages = <Subject<ChartMessage>>this.chartWsService.connect(SOCKET_CHART_URL).pipe(map(
       (response: MessageEvent): ChartMessage => {
         let data = JSON.parse(response.data);
         console.log(data);
+        //this.gaugeComponent.updateData(data.chart_msg);
+
         return {
           msg_type: data.chart_msg.msg_type,
           x: data.chart_msg.x,
@@ -58,6 +62,8 @@ export class DataManagerService {
       }
     ));
   }
+
+  
 
 
   // GET request
@@ -76,6 +82,14 @@ export class DataManagerService {
 
   stopSending(){
     this.droneWsService.send('stop');
+  }
+
+  playChart(){
+    this.chartWsService.send('start');
+  }
+
+  stopChart(){
+    this.chartWsService.send('stop');
   }
 
   closeConnection(){

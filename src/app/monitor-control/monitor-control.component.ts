@@ -462,6 +462,7 @@ export class MonitorControlComponent implements OnInit {
     if (myVideo.played) myVideo.pause();
   }
 
+
   webSocketConnect() {
     //Update drone position from websocket data
     this.dataManager.droneConnect();
@@ -670,6 +671,7 @@ export class MonitorControlComponent implements OnInit {
     console.log('toggle', event.checked);
     console.log(event.source.id);
     if (event.checked){
+      this.dataManager.playChart();
       this.openChart()
       if(event.source.id == 'temp'){
         this.umidChecked = false;
@@ -678,6 +680,7 @@ export class MonitorControlComponent implements OnInit {
       }
     }else{
       this.closeChartPanel();
+      this.dataManager.stopChart();
     }
 }
 

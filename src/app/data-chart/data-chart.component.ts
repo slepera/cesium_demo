@@ -182,8 +182,8 @@ export class DataChartComponent {
 
 
 // WebSocket usando il servizio websocket.service e data-manager
-this.dataManager.chartConnect();
-this.subscription = dataManager.chartMessages.subscribe(msg => {
+//this.dataManager.chartConnect();
+this.subscription = dataManager.chartMessages.subscribe(msg => console.log("chart: "+ msg)/* {
     console.log("Msg_Type: " + msg.msg_type);
     console.log("Data: " + msg.y);
     console.log("Time: " + msg.x);
@@ -210,7 +210,7 @@ this.subscription = dataManager.chartMessages.subscribe(msg => {
     }]
   }
 
-  });
+  } */);
 
   }
 

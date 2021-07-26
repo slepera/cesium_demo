@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injectable, OnInit } from '@angular/core';
 import { NgxGaugeType } from 'ngx-gauge/gauge/gauge';
 import { DataManagerService } from '../data-manager.service';
 
 let n: number;
+
+@Injectable({
+  providedIn: 'root',
+})
 @Component({
   selector: 'app-gauge',
   templateUrl: './gauge.component.html',
@@ -26,8 +30,10 @@ export class GaugeComponent implements OnInit {
   gaugeAppendText2 = "km/hr";
 
   constructor(private dataManager: DataManagerService) {
-    this.dataManager.chartConnect();
-    this.subscription = dataManager.chartMessages.subscribe(msg => {
+    //this.dataManager.chartConnect();
+    console.log(dataManager);
+    console.log(dataManager.chartMessages);
+    this.subscription = dataManager.chartMessages.subscribe(msg => console.log("gauge: "+msg)/* {
     console.log("Msg_Type: " + msg.msg_type);
     console.log("Data: " + msg.y);
     console.log("Time: " + msg.x);
@@ -42,10 +48,25 @@ export class GaugeComponent implements OnInit {
     this.gaugeValue2 = n;
   }
 
-  });
-   }
+   } */);
+  }
 
-    
+  updateData(msg){
+    console.log("Msg_Type: " + msg.msg_type);
+    console.log("Data: " + msg.y);
+    console.log("Time: " + msg.x);
+    n = +msg.y
+    if(msg.msg_type === 'cpu')
+    {
+      this.gaugeValue = n;
+    }
+
+  if(msg.msg_type === 'mem')
+  {
+    this.gaugeValue2 = n;
+  }
+
+  }  
   ngOnInit(): void {
     
   }
