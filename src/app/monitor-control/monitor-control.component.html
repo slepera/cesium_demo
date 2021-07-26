@@ -55,39 +55,18 @@
     &nbsp;&nbsp;&nbsp;
     <button mat-button class="my-button" [matMenuTriggerFor]="menu_env" [color]="'success'" type="submit">Environmental Monitoring</button>
     <mat-menu #menu_env="matMenu" class="customize">
-      <h2>Weather: </h2>
       <li>
-        Temperature (°C):
-      </li>
-      <li>
-        Umidity (%):
-      </li>
-      <li>
-        Pression (hPa):
-      </li>
-      <li>
-        UV:
-      </li>
-      <li>
-        Wind speed (km/s):
-      </li>
-        <li>
-          <mat-slide-toggle (change)="toggle($event)" [color]="'success'" type="submit" [labelPosition]="'before'">Chart</mat-slide-toggle>
+        <button mat-button (click)="showGauge()" [color]="'success'" type="submit">
+          <mat-icon>auto_graph</mat-icon>
+          </button>
         </li>
         &nbsp;&nbsp;&nbsp;
-        &nbsp;&nbsp;&nbsp;
-      <h2>Water: </h2>
-      <li>
-        Temperature (°C):
-      </li>
-      <li>
-        Salinity (%):
-      </li>
-      <li>
-        Ph:
-      </li>
         <li>
-          <mat-slide-toggle (change)="toggle($event)" [color]="'success'" type="submit" [labelPosition]="'before'">Chart</mat-slide-toggle>
+          <mat-slide-toggle id = "temp" [(ngModel)]="tempChecked" (change)="toggle($event)" [color]="'success'" type="submit" [labelPosition]="'before'">Temperature</mat-slide-toggle>
+        </li>
+        &nbsp;&nbsp;&nbsp;
+        <li>
+          <mat-slide-toggle id = "umidity" [(ngModel)]="umidChecked" (change)="toggle($event)" [color]="'success'" type="submit" [labelPosition]="'before'">Umidity</mat-slide-toggle>
         </li>
     </mat-menu>
     &nbsp;&nbsp;&nbsp;

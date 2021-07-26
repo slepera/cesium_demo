@@ -24,6 +24,8 @@ import { PortalModule } from '@angular/cdk/portal';
 import { OverlayModule } from '@angular/cdk/overlay';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatMenuModule }  from '@angular/material/menu';
+import { NgxGaugeModule } from 'ngx-gauge';
+import { GaugeComponent } from './gauge/gauge.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,8 @@ import {MatMenuModule }  from '@angular/material/menu';
     MainMenuComponent,
     MonitorControlComponent,
     CesiumDirective,
-    DataChartComponent
+    DataChartComponent,
+    GaugeComponent
   ],
   imports: [
     MatCheckboxModule,
@@ -50,7 +53,8 @@ import {MatMenuModule }  from '@angular/material/menu';
     FormsModule,
     PortalModule,
     MatSlideToggleModule,
-    MatMenuModule
+    MatMenuModule,
+    NgxGaugeModule
   ],
   exports: [OverlayModule],
   providers: [WebsocketService],

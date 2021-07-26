@@ -52,7 +52,6 @@ export class MonitorControlComponent implements OnInit {
   private startDate: Date;
   private stopDate: Date;
   public useDefault: false;
-
   layer: Layer = {
     name: 'Layers',
     completed: false,
@@ -63,6 +62,8 @@ export class MonitorControlComponent implements OnInit {
       { name: 'LIDAR', completed: false, color: 'warn' }
     ]
   };
+  umidChecked = false;
+  tempChecked = false;
 
   allComplete: boolean = false;
   nextPosition: number = 0;
@@ -112,6 +113,7 @@ export class MonitorControlComponent implements OnInit {
     this.satService.AddEquatorial(this.mViewer);
     this.satService.AddPolar(this.mViewer);
     this.TimeSet();
+    
 
     // Click event to get coordinates
     // scene.canvas.addEventListener('contextmenu', (event) => {
@@ -446,6 +448,9 @@ export class MonitorControlComponent implements OnInit {
     })
   }
 
+  showGauge(){
+    window.open("http://localhost:4200/gauge/",'window','location=no, toolbar=no, menubar=no, resizable=yes');
+  }
 
   playVideo() {
     var myVideo: any = document.getElementById("trailer");
@@ -663,8 +668,14 @@ export class MonitorControlComponent implements OnInit {
 
   public toggle(event: MatSlideToggleChange) {
     console.log('toggle', event.checked);
+    console.log(event.source.id);
     if (event.checked){
       this.openChart()
+      if(event.source.id == 'temp'){
+        this.umidChecked = false;
+      }else if(event.source.id == 'umidity'){
+        this.tempChecked = false;
+      }
     }else{
       this.closeChartPanel();
     }
