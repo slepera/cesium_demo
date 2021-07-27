@@ -3,6 +3,7 @@ import { HttpClient} from '@angular/common/http';
 import { WebsocketService } from './websocket.service';
 import { Observable, Subject } from "rxjs";
 import { map } from 'rxjs/operators';
+import { WebsocketChartService } from './websocket-chart.service';
 
 export interface DroneMessage {
   lat: string;
@@ -32,15 +33,15 @@ export class DataManagerService {
   subsc: any;
   public selectedData: string;
   
-  constructor(private http: HttpClient, private chartWsService: WebsocketService, private droneWsService: WebsocketService, /* private gaugeComponent: GaugeComponent */) {
-  this.chartConnect();
+  constructor(private http: HttpClient, private chartWsService: WebsocketChartService, private droneWsService: WebsocketService, /* private gaugeComponent: GaugeComponent */) {
   this.cM = new Subject<ChartMessage>();
   this.chartMessages = new Subject<ChartMessage>();
+  this.chartConnect();
 }
   droneConnect(){
     this.droneMessages = <Subject<DroneMessage>>this.droneWsService.connect(SOCKET_DRONE_URL).pipe(map(
-      (response: MessageEvent): DroneMessage => {
-        let data = JSON.parse(response.data);
+      (response_drone: MessageEvent): DroneMessage => {
+        let data = JSON.parse(response_drone.data);
         return {
           lat: data.drone_msg.lat,
           lon: data.drone_msg.lon,
@@ -49,6 +50,7 @@ export class DataManagerService {
         };
       }
     ));
+    console.log(this.chartWsService);
   }
 
   chartConnect(){
@@ -82,6 +84,8 @@ export class DataManagerService {
     ));
 
     this.cM.subscribe(msg => this.trigger(msg));
+    console.log(this.chartWsService);
+
   }
 
   trigger(something){
