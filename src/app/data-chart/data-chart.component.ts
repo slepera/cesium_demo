@@ -9,6 +9,13 @@ import {
   ApexTitleSubtitle
 } from "ng-apexcharts";
 import { DataManagerService } from "../data-manager.service";
+import { NgxGaugeType } from "ngx-gauge/gauge/gauge";
+import { RangeAndBearingComponent } from "angular-cesium";
+
+interface dataType {
+  x: number;
+  y: string;
+}
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -30,9 +37,31 @@ export class DataChartComponent {
   public chartOptions2;
   public id;
   public subscription;
-
+  private cpuData: dataType = {
+    x: 0,
+    y: ''
+  };
+  private memData: dataType= {
+    x: 0,
+    y: ''
+  };
+  private selectedData: dataType= {
+    x: 0,
+    y: ''
+  };
+  public selectedType: string;
+  gaugeType: NgxGaugeType = "arch";
+  gaugeValue = 28.3;
+  gaugeLabel = "Speed";
+  gaugeAppendText = "km/hr";
+  thresholdConfig = {
+    '0': {color: 'green'},
+    '40': {color: 'orange'},
+    '75.5': {color: 'red'}
+};
+bcolor = 'white';
   constructor(private dataManager: DataManagerService) {
-
+    this.selectedType = this.dataManager.selectedData;
     this.chartOptions = {
       series: [
         {
@@ -183,12 +212,15 @@ export class DataChartComponent {
 
 // WebSocket usando il servizio websocket.service e data-manager
 //this.dataManager.chartConnect();
-this.subscription = dataManager.chartMessages.subscribe(msg => console.log("chart: "+ msg)/* {
-    console.log("Msg_Type: " + msg.msg_type);
-    console.log("Data: " + msg.y);
-    console.log("Time: " + msg.x);
+
+
+
+this.subscription = dataManager.chartMessages.subscribe(msg => {
+    // console.log("Msg_Type: " + msg.msg_type);
+    // console.log("Data: " + msg.y);
+    // console.log("Time: " + msg.x);
     n = +msg.x
-    if(msg.msg_type === 'cpu')
+    /* if(msg.msg_type === 'cpu')
     {
       this.chartOptions.series = [{
         data: this.chartOptions.series[0].data.concat({
@@ -197,9 +229,7 @@ this.subscription = dataManager.chartMessages.subscribe(msg => console.log("char
           }
         )
       }]
-    }
-
-  if(msg.msg_type === 'mem')
+    }else if(msg.msg_type === 'mem')
   {
     this.chartOptions2.series = [{
       data: this.chartOptions2.series[0].data.concat({
@@ -208,9 +238,32 @@ this.subscription = dataManager.chartMessages.subscribe(msg => console.log("char
         }
       )
     }]
+  } */
+  if(msg.msg_type === 'cpu'){
+    this.cpuData.x = n;
+    this.cpuData.y = msg.y;
+  }else if  (msg.msg_type === 'mem'){
+    this.memData.x = n;
+    this.memData.y = msg.y;
   }
+  console.log(this.selectedType);
+  if (this.selectedType == 'temp'){
+    this.selectedData.x = this.cpuData.x;
+    this.selectedData.y = this.cpuData.y;
+  } else if (this.selectedType == 'umidity'){
+    this.selectedData.x = this.memData.x;
+    this.selectedData.y = this.memData.y;
+  }
+  this.chartOptions.series = [{
+    data: this.chartOptions.series[0].data.concat({
+        x: this.selectedData.x,
+        y: this.selectedData.y
+      }
+    )
+  }]
+  this.gaugeValue = +this.selectedData.y;
 
-  } */);
+  });
 
   }
 

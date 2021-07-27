@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
 import { WebsocketService } from './websocket.service';
 import { Observable, Subject } from "rxjs";
-import { map, share } from 'rxjs/operators';
-import { GaugeComponent } from './gauge/gauge.component';
+import { map } from 'rxjs/operators';
 
 export interface DroneMessage {
   lat: string;
@@ -29,9 +28,15 @@ export class DataManagerService {
   public orbitEndPoint: string = 'http://localhost:8080/orbit/';
   public chartMessages: Subject<ChartMessage>;
   public droneMessages: Subject<DroneMessage>;
-
+  private cM: Subject<ChartMessage>;
+  subsc: any;
+  public selectedData: string;
+  
   constructor(private http: HttpClient, private chartWsService: WebsocketService, private droneWsService: WebsocketService, /* private gaugeComponent: GaugeComponent */) {
-  }
+  this.chartConnect();
+  this.cM = new Subject<ChartMessage>();
+  this.chartMessages = new Subject<ChartMessage>();
+}
   droneConnect(){
     this.droneMessages = <Subject<DroneMessage>>this.droneWsService.connect(SOCKET_DRONE_URL).pipe(map(
       (response: MessageEvent): DroneMessage => {
@@ -48,10 +53,24 @@ export class DataManagerService {
 
   chartConnect(){
     console.log("Chart Connect");
-    this.chartMessages = <Subject<ChartMessage>>this.chartWsService.connect(SOCKET_CHART_URL).pipe(map(
+    // this.chartMessages = <Subject<ChartMessage>>this.chartWsService.connect(SOCKET_CHART_URL).pipe(map(
+    //   (response: MessageEvent): ChartMessage => {
+    //     let data = JSON.parse(response.data);
+    //     console.log(data);
+    //     //this.gaugeComponent.updateData(data.chart_msg);
+
+    //     return {
+    //       msg_type: data.chart_msg.msg_type,
+    //       x: data.chart_msg.x,
+    //       y: data.chart_msg.y
+    //     };
+    //   }
+    // ));
+
+    this.cM = <Subject<ChartMessage>>this.chartWsService.connect(SOCKET_CHART_URL).pipe(map(
       (response: MessageEvent): ChartMessage => {
         let data = JSON.parse(response.data);
-        console.log(data);
+        //console.log(data);
         //this.gaugeComponent.updateData(data.chart_msg);
 
         return {
@@ -61,8 +80,13 @@ export class DataManagerService {
         };
       }
     ));
+
+    this.cM.subscribe(msg => this.trigger(msg));
   }
 
+  trigger(something){
+    this.chartMessages.next(something);
+  }
   
 
 
@@ -94,6 +118,10 @@ export class DataManagerService {
 
   closeConnection(){
     this.droneWsService.close();
+  }
+
+  OnDestroy(){
+    this.chartWsService.close();
   }
 }
 

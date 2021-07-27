@@ -26,6 +26,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatMenuModule }  from '@angular/material/menu';
 import { NgxGaugeModule } from 'ngx-gauge';
 import { GaugeComponent } from './gauge/gauge.component';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { GaugeComponent } from './gauge/gauge.component';
     PortalModule,
     MatSlideToggleModule,
     MatMenuModule,
-    NgxGaugeModule
+    NgxGaugeModule,
+    MatDialogModule
   ],
   exports: [OverlayModule],
   providers: [WebsocketService],

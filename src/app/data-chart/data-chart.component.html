@@ -5,14 +5,26 @@
       [xaxis]="chartOptions.xaxis"
       [title]="chartOptions.title"
     ></apx-chart>
-  <apx-chart
+  <!-- <apx-chart
     [series]="chartOptions2.series"
     [chart]="chartOptions2.chart"
     [xaxis]="chartOptions2.xaxis"
     [title]="chartOptions2.title"
-  ></apx-chart>
+  ></apx-chart> -->
+  <ngx-gauge class = "gauge"
+  [size]=80
+  [type]="gaugeType" 
+  [value]="gaugeValue" 
+  [label]="gaugeLabel" 
+  [append]="gaugeAppendText"
+  [thresholds]="thresholdConfig"
+  [backgroundColor]="bcolor"
+
+  >
+</ngx-gauge>
+
   </div>
 
-<div>
+<!-- <div>
     <button routerLink="/" routerLinkActive="active"> Home </button>
-</div>
+</div> -->

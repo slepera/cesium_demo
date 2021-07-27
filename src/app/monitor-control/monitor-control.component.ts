@@ -11,6 +11,8 @@ import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { CdkPortal, ComponentPortal, Portal } from '@angular/cdk/portal';
 import { DataChartComponent } from '../data-chart/data-chart.component';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatDialog } from '@angular/material/dialog';
+import { GaugeComponent } from '../gauge/gauge.component';
 
 export interface Layer {
   name: string;
@@ -51,7 +53,9 @@ export class MonitorControlComponent implements OnInit {
   public dataCircle;
   private startDate: Date;
   private stopDate: Date;
-  public useDefault: false;
+  public useDefault= false;
+  private isWsOpen = false;
+  
   layer: Layer = {
     name: 'Layers',
     completed: false,
@@ -71,8 +75,9 @@ export class MonitorControlComponent implements OnInit {
 
   @ViewChildren(CdkPortal) templatePortals: 
   QueryList<Portal<any>>;
+  sub2: any;
 
-  constructor(private dronesService: DronesService, private dataManager: DataManagerService,
+  constructor(private dronesService: DronesService, private dataManager: DataManagerService, public dialog: MatDialog,
     private iconService: IconService, private satService: SatelliteService, public overlay: Overlay, public viewContainerRef: ViewContainerRef) {
     this.iconService.registerIcons();
   }
@@ -448,10 +453,6 @@ export class MonitorControlComponent implements OnInit {
     })
   }
 
-  showGauge(){
-    window.open("http://localhost:4200/gauge/",'window','location=no, toolbar=no, menubar=no, resizable=yes');
-  }
-
   playVideo() {
     var myVideo: any = document.getElementById("trailer");
     if (myVideo.paused) myVideo.play();
@@ -532,7 +533,6 @@ export class MonitorControlComponent implements OnInit {
     this.mViewer.timeline.zoomTo(this.mViewer.clock.startTime, this.mViewer.clock.stopTime);
     this.mViewer.clock.shouldAnimate = true;
   }
-
 
 
   SinmulateOrbitTimeTagged() {
@@ -669,9 +669,9 @@ export class MonitorControlComponent implements OnInit {
 
   public toggle(event: MatSlideToggleChange) {
     console.log('toggle', event.checked);
-    console.log(event.source.id);
     if (event.checked){
-      this.dataManager.playChart();
+      this.dataManager.selectedData = event.source.id;
+      this.startWsChart();
       this.openChart()
       if(event.source.id == 'temp'){
         this.umidChecked = false;
@@ -680,9 +680,30 @@ export class MonitorControlComponent implements OnInit {
       }
     }else{
       this.closeChartPanel();
-      this.dataManager.stopChart();
+      this.stopWsChart();
     }
 }
+
+  startWsChart(){
+    if (!this.isWsOpen){
+    this.dataManager.playChart();
+    this.isWsOpen = true;
+    }
+  }
+
+  stopWsChart(){
+    this.dataManager.stopChart();
+    this.isWsOpen = false;
+  }
+
+  showGauge(){
+    //window.open("http://localhost:4200/gauge/",'window','location=no, toolbar=no, menubar=no, resizable=yes');
+    this.startWsChart();
+    this.dialog.open(GaugeComponent/* ,{
+      height: '400px',
+      width: '600px'
+    } */);
+  }
 
   public toggleVideo(event: MatSlideToggleChange){
     var myVideo: any = document.getElementById("trailer");
@@ -696,7 +717,6 @@ export class MonitorControlComponent implements OnInit {
 
   openChart() {
     let config = new OverlayConfig();
-
     config.positionStrategy = this.overlay.position()
         .global()
         .right(`50px`)
@@ -707,5 +727,13 @@ export class MonitorControlComponent implements OnInit {
 
   closeChartPanel() {
     this.chartOverlayRef.dispose();
+  }
+
+  openWs(){
+    this.sub2 = this.dataManager.chartMessages.subscribe(msg => console.log("sub2: "+ msg));
+  }
+
+  ngOnDestroy(){
+    this.dataManager.OnDestroy();
   }
 }

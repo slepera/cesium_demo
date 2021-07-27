@@ -31,12 +31,10 @@ export class GaugeComponent implements OnInit {
 
   constructor(private dataManager: DataManagerService) {
     //this.dataManager.chartConnect();
-    console.log(dataManager);
-    console.log(dataManager.chartMessages);
-    this.subscription = dataManager.chartMessages.subscribe(msg => console.log("gauge: "+msg)/* {
-    console.log("Msg_Type: " + msg.msg_type);
-    console.log("Data: " + msg.y);
-    console.log("Time: " + msg.x);
+    this.subscription = dataManager.chartMessages.subscribe(msg => /* console.log("gauge: "+msg) */{
+    // console.log("Msg_Type: " + msg.msg_type);
+    // console.log("Data: " + msg.y);
+    // console.log("Time: " + msg.x);
     n = +msg.y
     if(msg.msg_type === 'cpu')
     {
@@ -48,7 +46,7 @@ export class GaugeComponent implements OnInit {
     this.gaugeValue2 = n;
   }
 
-   } */);
+   });
   }
 
   updateData(msg){

@@ -72,7 +72,11 @@
     &nbsp;&nbsp;&nbsp;
     <button mat-button class="my-button" [matMenuTriggerFor]="menu_struct" [color]="'success'" type="submit">Structural Monitoring</button>
     <mat-menu #menu_struct="matMenu" class="customize">
+      <button mat-button (click)="openWs()" [color]="'success'" type="submit">
+        <mat-icon>auto_graph</mat-icon>
+      </button>
     </mat-menu>
+    
     &nbsp;&nbsp;&nbsp;
       <button mat-button [matMenuTriggerFor]="menu_video" [color]="'success'" type="submit">Video</button>
       <mat-menu #menu_video="matMenu" class="customize">
