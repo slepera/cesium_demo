@@ -34,14 +34,16 @@ export class MonitorControlComponent implements OnInit {
   private entity;
   public subscription;
   public coord: Coord = {
-    lat: 44.0503706,
-    lon: 10,
-    alt: 10,
+    lat: 43.318086546037215,
+    lon: 13.853051325073828,
+    alt: -150,
     heading: 0,
     pitch: 0,
     roll: 0
   }
+      
   private platform;
+  private submarine;
   private sar;
   private multi;
   private lidar;
@@ -244,6 +246,16 @@ export class MonitorControlComponent implements OnInit {
         outline: !0,
         numberOfVerticalLines: 0,
         outlineColor: Cesium.Color.RED.withAlpha(.8)
+      },
+      show: true
+    });
+
+    this.submarine = viewer.entities.add({
+      name: "submarine",
+      ellipse : {
+        semiMinorAxis : 500.0,
+        semiMajorAxis : 500.0,
+        material : '../../assets/submarine.png'
       },
       show: true
     });
@@ -495,6 +507,7 @@ export class MonitorControlComponent implements OnInit {
         },
       });
       this.dronesService.updatePosition(this.entity, this.cone, dataCircle, this.coord);
+      this.submarine.position = Cesium.Cartesian3.fromDegrees(this.coord.lon+0.01, this.coord.lat+0.01);
     });
   }
   startSending() {
@@ -685,6 +698,11 @@ export class MonitorControlComponent implements OnInit {
     }
   }
 
+  goToPlatform(){
+    //this.mViewer.camera.flyTo({destination: Cesium.Cartesian3.fromDegrees(this.coord.lon, this.coord.lat, 10000)});
+    this.mViewer.zoomTo(this.platform);
+  }
+
   stopWsChart(){
     this.dataManager.stopChart();
     this.isWsOpen = false;
@@ -722,10 +740,6 @@ export class MonitorControlComponent implements OnInit {
 
   closeChartPanel() {
     this.chartOverlayRef.dispose();
-  }
-
-  openWs(){
-    this.sub2 = this.dataManager.chartMessages.subscribe(msg => console.log("sub2: "+ msg));
   }
 
   ngOnDestroy(){

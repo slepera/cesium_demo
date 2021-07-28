@@ -5,7 +5,10 @@
       <mat-icon>home</mat-icon>
     </button>
     &nbsp;&nbsp;&nbsp;
-
+    <button mat-button (click)="goToPlatform()" [color]="'success'">
+      <mat-icon>my_location</mat-icon>
+    </button>
+    &nbsp;&nbsp;&nbsp;
     <button mat-button [matMenuTriggerFor]="menu_satellite" [color]="'success'" type="submit">Satellite</button>
     <mat-menu #menu_satellite="matMenu" class="customize">
     &nbsp;&nbsp;&nbsp;
@@ -62,7 +65,7 @@
     <button mat-button class="my-button" [matMenuTriggerFor]="menu_env" [color]="'success'" >Environmental Monitoring</button>
     <mat-menu #menu_env="matMenu" class="customize">
         <button mat-button (click)="showGauge()" class="central">
-          <mat-icon>auto_graph</mat-icon>
+          <mat-icon>speed</mat-icon>
           </button>
       <button mat-menu-item [matMenuTriggerFor]="weather" class="text-color">Weather</button>
       <button mat-menu-item [matMenuTriggerFor]="water" class="text-color">Water</button>
@@ -94,7 +97,7 @@
     &nbsp;&nbsp;&nbsp;
     <button mat-button class="my-button" [matMenuTriggerFor]="menu_struct" [color]="'success'" type="submit">Structural Monitoring</button>
     <mat-menu #menu_struct="matMenu" class="customize">
-      <button mat-button (click)="openWs()" class="central">
+      <button mat-button (click)="goToPlatform()" class="central">
         <mat-icon>auto_graph</mat-icon>
       </button>
     </mat-menu>
