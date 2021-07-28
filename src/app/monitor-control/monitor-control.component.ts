@@ -68,6 +68,8 @@ export class MonitorControlComponent implements OnInit {
   };
   umidChecked = false;
   tempChecked = false;
+  windChecked = false;
+  isChecked = false;
 
   allComplete: boolean = false;
   nextPosition: number = 0;
@@ -646,41 +648,33 @@ export class MonitorControlComponent implements OnInit {
 
   }
 
-  updateAllComplete() {
-    this.allComplete = this.layer.sublayers != null && this.layer.sublayers.every(t => t.completed);
-    console.log("updateAllComplete");
-  }
-
-  someComplete(): boolean {
-    if (this.layer.sublayers == null) {
-      return false;
-    }
-    return this.layer.sublayers.filter(t => t.completed).length > 0 && !this.allComplete;
-  }
-
-  setAll(completed: boolean) {
-    this.allComplete = completed;
-    if (this.layer.sublayers == null) {
-      return;
-    }
-    this.layer.sublayers.forEach(t => t.completed = completed);
-  }
-
 
   public toggle(event: MatSlideToggleChange) {
     console.log('toggle', event.checked);
     if (event.checked){
       this.dataManager.selectedData = event.source.id;
-      this.startWsChart();
-      this.openChart()
+      if (this.isChecked == true){
+        this.closeChartPanel();
+      }else{
+        this.startWsChart();
+      }
+      this.openChart();
       if(event.source.id == 'temp'){
         this.umidChecked = false;
+        this.windChecked = false;
+        console.log(this.windChecked);
       }else if(event.source.id == 'umidity'){
         this.tempChecked = false;
+        this.windChecked = false;
+      }else if(event.source.id == 'wind'){
+        this.tempChecked = false;
+        this.umidChecked = false;
       }
+      this.isChecked = true;
     }else{
       this.closeChartPanel();
       this.stopWsChart();
+      this.isChecked = false;
     }
 }
 
@@ -694,6 +688,7 @@ export class MonitorControlComponent implements OnInit {
   stopWsChart(){
     this.dataManager.stopChart();
     this.isWsOpen = false;
+
   }
 
   showGauge(){

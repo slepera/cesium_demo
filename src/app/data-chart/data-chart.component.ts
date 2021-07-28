@@ -10,7 +10,6 @@ import {
 } from "ng-apexcharts";
 import { DataManagerService } from "../data-manager.service";
 import { NgxGaugeType } from "ngx-gauge/gauge/gauge";
-import { RangeAndBearingComponent } from "angular-cesium";
 
 interface dataType {
   x: number;
@@ -37,11 +36,12 @@ export class DataChartComponent {
   public chartOptions2;
   public id;
   public subscription;
-  private cpuData: dataType = {
+  public myBoolean = true;
+  private tempData: dataType = {
     x: 0,
     y: ''
   };
-  private memData: dataType= {
+  private umidData: dataType= {
     x: 0,
     y: ''
   };
@@ -216,9 +216,6 @@ bcolor = 'white';
 
 
 this.subscription = dataManager.chartMessages.subscribe(msg => {
-    // console.log("Msg_Type: " + msg.msg_type);
-    // console.log("Data: " + msg.y);
-    // console.log("Time: " + msg.x);
     n = +msg.x
     /* if(msg.msg_type === 'cpu')
     {
@@ -240,19 +237,19 @@ this.subscription = dataManager.chartMessages.subscribe(msg => {
     }]
   } */
   if(msg.msg_type === 'cpu'){
-    this.cpuData.x = n;
-    this.cpuData.y = msg.y;
+    this.tempData.x = n;
+    this.tempData.y = msg.y;
   }else if  (msg.msg_type === 'mem'){
-    this.memData.x = n;
-    this.memData.y = msg.y;
+    this.umidData.x = n;
+    this.umidData.y = msg.y;
   }
-  console.log(this.selectedType);
+
   if (this.selectedType == 'temp'){
-    this.selectedData.x = this.cpuData.x;
-    this.selectedData.y = this.cpuData.y;
+    this.selectedData.x = this.tempData.x;
+    this.selectedData.y = this.tempData.y;
   } else if (this.selectedType == 'umidity'){
-    this.selectedData.x = this.memData.x;
-    this.selectedData.y = this.memData.y;
+    this.selectedData.x = this.umidData.x;
+    this.selectedData.y = this.umidData.y;
   }
   this.chartOptions.series = [{
     data: this.chartOptions.series[0].data.concat({
@@ -266,6 +263,8 @@ this.subscription = dataManager.chartMessages.subscribe(msg => {
   });
 
   }
+
+
 
 
 }

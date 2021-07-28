@@ -5,24 +5,27 @@
       <mat-icon>home</mat-icon>
     </button>
     &nbsp;&nbsp;&nbsp;
+
     <button mat-button [matMenuTriggerFor]="menu_satellite" [color]="'success'" type="submit">Satellite</button>
     <mat-menu #menu_satellite="matMenu" class="customize">
     &nbsp;&nbsp;&nbsp;
+
     <button mat-button (click)="SinmulateOrbitTimeTagged()" [color]="'success'" type="submit">
       <mat-icon>satellite</mat-icon>
     </button>
     &nbsp;&nbsp;&nbsp;
     </mat-menu>
     &nbsp;&nbsp;&nbsp;
+
     <button mat-button [matMenuTriggerFor]="menu_drone" [color]="'success'" type="submit">Drone</button>
-    <mat-menu #menu_drone="matMenu" class="customize">
+    <mat-menu #menu_drone="matMenu" class="customize_drone">
       <li>
         &nbsp;&nbsp;&nbsp;
-        <button mat-button (click)="webSocketConnect()" [color]="'success'" type="submit">
+        <button mat-button (click)="webSocketConnect()">
           <mat-icon svgIcon="socket"></mat-icon>
         </button>
         &nbsp;&nbsp;&nbsp;
-        <button mat-button (click)="closeConnection()" [color]="'success'" type="submit">
+        <button mat-button (click)="closeConnection()">
           <mat-icon svgIcon="socket_off"></mat-icon>
         </button>
         &nbsp;&nbsp;&nbsp;
@@ -30,49 +33,68 @@
       &nbsp;&nbsp;&nbsp;
       <li>
         &nbsp;&nbsp;&nbsp;
-    <button mat-button (click)="startSending()" [color]="'success'" type="submit">
+
+    <button mat-button (click)="startSending()">
       <mat-icon>play_arrow</mat-icon>
     </button>
     &nbsp;&nbsp;&nbsp;
-    <button mat-button (click)="stopSending()" [color]="'success'" type="submit">
+
+    <button mat-button (click)="stopSending()">
       <mat-icon>stop</mat-icon>
     </button>
     &nbsp;&nbsp;&nbsp;
-      </li>
+    </li>
     </mat-menu>
     &nbsp;&nbsp;&nbsp;
+
     <button mat-button [matMenuTriggerFor]="menu_layers" [color]="'success'" type="submit">Layers</button>
       <mat-menu #menu_layers="matMenu" class="customize">
         <li *ngFor="let sublayer of layer.sublayers">
           <mat-checkbox [(ngModel)]="sublayer.completed"
                       [color]="sublayer.color"
-                      (ngModelChange)="updateAllComplete()"
                       (change)="showImages($event)">
             {{sublayer.name}}
           </mat-checkbox>
         </li>
       </mat-menu>
     &nbsp;&nbsp;&nbsp;
-    <button mat-button class="my-button" [matMenuTriggerFor]="menu_env" [color]="'success'" type="submit">Environmental Monitoring</button>
+
+    <button mat-button class="my-button" [matMenuTriggerFor]="menu_env" [color]="'success'" >Environmental Monitoring</button>
     <mat-menu #menu_env="matMenu" class="customize">
-      <li>
-        <button mat-button (click)="showGauge()" [color]="'success'" type="submit">
+        <button mat-button (click)="showGauge()" class="central">
           <mat-icon>auto_graph</mat-icon>
           </button>
-        </li>
-        &nbsp;&nbsp;&nbsp;
+      <button mat-menu-item [matMenuTriggerFor]="weather" class="text-color">Weather</button>
+      <button mat-menu-item [matMenuTriggerFor]="water" class="text-color">Water</button>
+    </mat-menu>
+
+    <mat-menu #weather = "matMenu" class = "customize">
         <li>
-          <mat-slide-toggle id = "temp" [(ngModel)]="tempChecked" (change)="toggle($event)" [color]="'success'" type="submit" [labelPosition]="'before'">Temperature</mat-slide-toggle>
+          <mat-slide-toggle id = "temp" [(ngModel)]="tempChecked" (change)="toggle($event)"  [labelPosition]="'before'">Temperature</mat-slide-toggle>
         </li>
-        &nbsp;&nbsp;&nbsp;
         <li>
-          <mat-slide-toggle id = "umidity" [(ngModel)]="umidChecked" (change)="toggle($event)" [color]="'success'" type="submit" [labelPosition]="'before'">Umidity</mat-slide-toggle>
+          <mat-slide-toggle id = "umidity" [(ngModel)]="umidChecked" (change)="toggle($event)" [labelPosition]="'before'">Umidity</mat-slide-toggle>
+        </li>
+        <li>
+          <mat-slide-toggle id = "wind" [(ngModel)]="windChecked" (change)="toggle($event)" [labelPosition]="'before'">Wind</mat-slide-toggle>
         </li>
     </mat-menu>
+    <mat-menu #water = "matMenu" class = "customize">
+      <li>
+        <mat-slide-toggle id = "water_temp" [(ngModel)]="tempChecked" (change)="toggle($event)"  [labelPosition]="'before'">Temperature</mat-slide-toggle>
+      </li>
+      <li>
+        <mat-slide-toggle id = "salinity" [(ngModel)]="umidChecked" (change)="toggle($event)" [labelPosition]="'before'">Salinity</mat-slide-toggle>
+      </li>
+      <li>
+        <mat-slide-toggle id = "ph" [(ngModel)]="umidChecked" (change)="toggle($event)" [labelPosition]="'before'">pH</mat-slide-toggle>
+      </li>
+    </mat-menu>
+  
     &nbsp;&nbsp;&nbsp;
     <button mat-button class="my-button" [matMenuTriggerFor]="menu_struct" [color]="'success'" type="submit">Structural Monitoring</button>
     <mat-menu #menu_struct="matMenu" class="customize">
-      <button mat-button (click)="openWs()" [color]="'success'" type="submit">
+      <button mat-button (click)="openWs()" class="central">
         <mat-icon>auto_graph</mat-icon>
       </button>
     </mat-menu>
@@ -82,13 +104,13 @@
       <mat-menu #menu_video="matMenu" class="customize">
         <li>
           &nbsp;&nbsp;&nbsp;
-          <mat-slide-toggle (change)="toggleVideo($event)" [color]="'success'" type="submit" [labelPosition]="'before'">UAV</mat-slide-toggle>
+          <mat-slide-toggle (change)="toggleVideo($event)"  [labelPosition]="'before'">UAV</mat-slide-toggle>
           &nbsp;&nbsp;&nbsp;
-          <button mat-button (click)="playVideo()" [color]="'success'" type="submit">
+          <button mat-button (click)="playVideo()" >
             <mat-icon>play_circle</mat-icon>
           </button>
           &nbsp;&nbsp;&nbsp;
-          <button mat-button (click)="pauseVideo()" [color]="'success'" type="submit">
+          <button mat-button (click)="pauseVideo()" >
             <mat-icon>pause_circle</mat-icon>
           </button>
           &nbsp;&nbsp;&nbsp;
@@ -96,13 +118,13 @@
         &nbsp;&nbsp;&nbsp;
         <li>
           &nbsp;&nbsp;&nbsp;
-          <mat-slide-toggle (change)="toggleVideo($event)" [color]="'success'" type="submit" [labelPosition]="'before'">UMS</mat-slide-toggle>
+          <mat-slide-toggle (change)="toggleVideo($event)" [labelPosition]="'before'">UMS</mat-slide-toggle>
           &nbsp;&nbsp;&nbsp;
-          <button mat-button (click)="playVideo()" [color]="'success'" type="submit">
+          <button mat-button (click)="playVideo()">
             <mat-icon>play_circle</mat-icon>
           </button>
           &nbsp;&nbsp;&nbsp;
-          <button mat-button (click)="pauseVideo()" [color]="'success'" type="submit">
+          <button mat-button (click)="pauseVideo()">
             <mat-icon>pause_circle</mat-icon>
           </button>
           &nbsp;&nbsp;&nbsp;

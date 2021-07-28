@@ -2,3 +2,18 @@
     position: fixed;
     bottom: 0;
 }
+
+li{
+    list-style-type: none;
+    margin-left:  4px;
+    margin-bottom: 1cm;
+}
+
+h1{
+    text-align: center;
+}
+
+.back{
+    background-color: rgba(0, 128, 0, 0.507);
+    color: #fff;
+}

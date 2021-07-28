@@ -53,12 +53,17 @@ h2{
 ::ng-deep .customize {
   background: rgba(0, 128, 0, 0.507);
   color: #fff;
+  width: 150px;
 }
 
 ::ng-deep .customize_drone {
   background: rgba(0, 128, 0, 0.507);
   color: #fff;
   width: 180px;
+}
+
+.text-color{
+  color: #fff;
 }
 
 li {
@@ -71,10 +76,14 @@ ul {
   margin-top: 0;
 }
 
-
-
 ::ng-deep .mat-button {
   height: 34px !important;
   width: 12px !important;
   font-size: 12px !important;
+}
+
+.central{
+    width:50%;
+    margin-left:25%;
+    margin-right:25%;
 }

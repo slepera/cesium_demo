@@ -12,61 +12,67 @@ let n: number;
   templateUrl: './gauge.component.html',
   styleUrls: ['./gauge.component.css']
 })
-export class GaugeComponent implements OnInit {
+export class GaugeComponent {
   subscription: any;
   gaugeType: NgxGaugeType = "arch";
-  gaugeValue = 28.3;
-  gaugeLabel = "Speed";
-  gaugeAppendText = "km/hr";
+  size=120;
   thresholdConfig = {
     '0': {color: 'green'},
     '40': {color: 'orange'},
     '75.5': {color: 'red'}
 };
 
-  gaugeType2: NgxGaugeType = "arch";
-  gaugeValue2 = 10;
-  gaugeLabel2 = "Speed";
-  gaugeAppendText2 = "km/hr";
+  thresholdConfigPh = {
+    '0': {color: 'red'},
+    '3': {color: 'orange'},
+    '5': {color: 'green'},
+    '9': {color: 'blue'},
+    '11': {color: 'purple'}
+  };
+  thresholdConfigTemp = {
+    '0': {color: 'green'},
+    '25': {color: 'yellow'},
+    '35': {color: 'orange'},
+    '40': {color: 'red'}
+  };
+
+  tempValue = 0;
+  tempLabel = "Temp";
+  tempAppendText = "°C";
+
+  umidValue = 0;
+  umidLabel = "Umidity";
+  umidAppendText = "%";
+
+  windValue = 0;
+  windLabel = "Wind speed";
+  windAppendText = "km/h";
+
+  salValue = 0;
+  salLabel = "Salinity";
+  salAppendText = "%";
+
+  phValue = 0;
+  phLabel = "pH";
+  phAppendText = "";
 
   constructor(private dataManager: DataManagerService) {
-    //this.dataManager.chartConnect();
     this.subscription = dataManager.chartMessages.subscribe(msg => /* console.log("gauge: "+msg) */{
-    // console.log("Msg_Type: " + msg.msg_type);
-    // console.log("Data: " + msg.y);
-    // console.log("Time: " + msg.x);
     n = +msg.y
     if(msg.msg_type === 'cpu')
     {
-      this.gaugeValue = n;
+      this.tempValue = n/100*50;
+      this.windValue=n;
+      this.phValue=n/100*14;
     }
 
   if(msg.msg_type === 'mem')
   {
-    this.gaugeValue2 = n;
+    this.umidValue = n;
+    this.salValue = this.umidValue;
   }
 
    });
-  }
-
-  updateData(msg){
-    console.log("Msg_Type: " + msg.msg_type);
-    console.log("Data: " + msg.y);
-    console.log("Time: " + msg.x);
-    n = +msg.y
-    if(msg.msg_type === 'cpu')
-    {
-      this.gaugeValue = n;
-    }
-
-  if(msg.msg_type === 'mem')
-  {
-    this.gaugeValue2 = n;
-  }
-
-  }  
-  ngOnInit(): void {
-    
   }
 
   

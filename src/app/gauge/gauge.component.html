@@ -1,24 +1,75 @@
-<p>
+<div>
+  <h1>Environmental Monitoring</h1>
+  <li>
+    <h2> Meteorological parameters</h2>
+      <ngx-gauge 
+      [size]="size"
+      [type]="gaugeType" 
+      [value]="tempValue" 
+      [label]="tempLabel" 
+      [append]="tempAppendText"
+      [thresholds]="thresholdConfigTemp"
+      [max] = "50"
+      >
+    </ngx-gauge>
+  
     <ngx-gauge 
-    [size]=80
+      [size]="size"
+      [type]="gaugeType" 
+      [value]="umidValue" 
+      [label]="umidLabel" 
+      [append]="umidAppendText"
+      [thresholds]="thresholdConfig"
+      >
+    </ngx-gauge>
+  
+    <ngx-gauge 
+      [size]="size"
+      [type]="gaugeType" 
+      [value]="windValue" 
+      [label]="windLabel" 
+      [append]="windAppendText"
+      [thresholds]="thresholdConfig"
+      >
+    </ngx-gauge>
+  </li>
+  <li>
+    <h2> Water conditions</h2>
+      <ngx-gauge 
+      [size]="size"
+      [type]="gaugeType" 
+      [value]="tempValue" 
+      [label]="tempLabel" 
+      [append]="tempAppendText"
+      [thresholds]="thresholdConfigTemp"
+      [max] = "50"
+      >
+    </ngx-gauge>
+  
+    <ngx-gauge 
+    [size]="size"
     [type]="gaugeType" 
-    [value]="gaugeValue" 
-    [label]="gaugeLabel" 
-    [append]="gaugeAppendText"
+    [value]="salValue" 
+    [label]="salLabel" 
+    [append]="salAppendText"
     [thresholds]="thresholdConfig"
-    >
-  </ngx-gauge>
-
-  <ngx-gauge 
-    [size]=80
-    [type]="gaugeType2" 
-    [value]="gaugeValue2" 
-    [label]="gaugeLabel2" 
-    [append]="gaugeAppendText2"
-    [thresholds]="thresholdConfig"
-    >
-  </ngx-gauge>
-</p>
-<div mat-dialog-actions class = "footer">
-  <button mat-button mat-dialog-close>Close</button>
+      >
+    </ngx-gauge>
+  
+    <ngx-gauge 
+    [size]="size"
+    [type]="gaugeType" 
+    [value]="phValue" 
+    [label]="phLabel" 
+    [append]="phAppendText"
+    [thresholds]="thresholdConfigPh"
+    [max] = "14"
+      >
+    </ngx-gauge>
+  </li>
+  
+  <div mat-dialog-actions class = "footer">
+    <button mat-button mat-dialog-close>Close</button>
+  </div>
+  
 </div>
