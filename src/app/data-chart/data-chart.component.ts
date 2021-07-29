@@ -37,6 +37,7 @@ export class DataChartComponent {
   public id;
   public subscription;
   public myBoolean = true;
+  private chartName: string;
   private tempData: dataType = {
     x: 0,
     y: ''
@@ -50,10 +51,10 @@ export class DataChartComponent {
     y: ''
   };
   public selectedType: string;
+  public gaugeLabel;
+  public gaugeAppendText;
   gaugeType: NgxGaugeType = "arch";
   gaugeValue = 28.3;
-  gaugeLabel = "Speed";
-  gaugeAppendText = "km/hr";
   thresholdConfig = {
     '0': {color: 'green'},
     '40': {color: 'orange'},
@@ -62,6 +63,16 @@ export class DataChartComponent {
 bcolor = 'white';
   constructor(private dataManager: DataManagerService) {
     this.selectedType = this.dataManager.selectedData;
+    if(this.selectedType === 'temp'){
+      this.chartName = 'Average Temperature';
+      this.gaugeLabel = "Temperature";
+      this.gaugeAppendText = "°C";
+    }else if(this.selectedType === 'umidity'){
+      this.chartName =  'Umidity';
+      this.gaugeLabel = "Umidity";
+      this.gaugeAppendText = "%";
+    }
+    
     this.chartOptions = {
       series: [
         {
@@ -71,6 +82,9 @@ bcolor = 'white';
       ],
       chart: {
         id: 'area-datetime',
+        toolbar:{
+          show: false,
+        },
         type: 'area',
         height: 350,
         zoom: {
@@ -78,7 +92,7 @@ bcolor = 'white';
         }
       },
       title: {
-        text: 'Average Temperature',
+        text: this.chartName,
         align: 'left'
       },
 
