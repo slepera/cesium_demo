@@ -57,7 +57,11 @@ export class MonitorControlComponent implements OnInit {
   private stopDate: Date;
   public useDefault= false;
   private isWsOpen = false;
-  
+  private heading = Cesium.Math.toRadians(0);
+  private pitch = Cesium.Math.toRadians(90);
+  private roll= 0;
+  private hpr = new Cesium.HeadingPitchRoll(this.heading, this.pitch, this.roll);
+
   layer: Layer = {
     name: 'Layers',
     completed: false,
@@ -252,14 +256,15 @@ export class MonitorControlComponent implements OnInit {
 
     this.submarine = viewer.entities.add({
       name: "submarine",
-      ellipse : {
-        semiMinorAxis : 500.0,
-        semiMajorAxis : 500.0,
-        material : '../../assets/submarine.png'
+      model: {
+        uri: '../../assets/sub2.glb',
+        minimumPixelSize: 4,
+        maximumScale: 0.05,
+        scale: 0.05
       },
       show: true
     });
-
+    
 
     this.sar = new Cesium.CustomDataSource('sar');
     this.multi = new Cesium.CustomDataSource('multi');
@@ -507,7 +512,11 @@ export class MonitorControlComponent implements OnInit {
         },
       });
       this.dronesService.updatePosition(this.entity, this.cone, dataCircle, this.coord);
-      this.submarine.position = Cesium.Cartesian3.fromDegrees(this.coord.lon+0.01, this.coord.lat+0.01);
+
+      var sub_position = Cesium.Cartesian3.fromDegrees(this.coord.lon+0.01, this.coord.lat+0.01, 50); 
+      var orientation = Cesium.Transforms.headingPitchRollQuaternion(sub_position, this.hpr);
+      this.submarine.position = sub_position;
+      this.submarine.orientation = orientation;
     });
   }
   startSending() {
