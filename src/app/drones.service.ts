@@ -15,6 +15,11 @@ export class DronesService {
       coordinates.lat,
       coordinates.alt
     );
+    var position2d = new Cesium.Cartesian3.fromDegrees(
+      coordinates.lon,
+      coordinates.lat,
+      1000
+    );
     var conePosition = new Cesium.Cartesian3.fromDegrees(
       coordinates.lon,
       coordinates.lat,
@@ -25,13 +30,13 @@ export class DronesService {
       coordinates.lat,
       70
     );
-    var orientation = UtilityModule.Orientation(position, this.drone_previous_position, 0);
+    var orientation = UtilityModule.Orientation(position2d, this.drone_previous_position, 0, 0);
     entity.position = position;
     entity.orientation = orientation;
     dataCircle.position = circlePosition;
     cone.position = conePosition;
     cone.cylinder.length = coordinates.alt;
-    this.drone_previous_position = position;
+    this.drone_previous_position = position2d;
     //cone.cylinder.bottomRadius = coordinates.alt/2;
   }
 }

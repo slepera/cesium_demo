@@ -511,7 +511,7 @@ export class MonitorControlComponent implements OnInit {
       this.dronesService.updatePosition(this.entity, this.cone, dataCircle, this.coord);
       var sub_position = Cesium.Cartesian3.fromDegrees(this.coord.lon + 0.01, this.coord.lat + 0.01, 50);
       this.submarine.position = sub_position;
-      this.submarine.orientation = UtilityModule.Orientation(sub_position, this.previous_sub_position, 90);
+      this.submarine.orientation = UtilityModule.Orientation(sub_position, this.previous_sub_position, 90, 180);
       this.previous_sub_position = sub_position;
     });
   }
