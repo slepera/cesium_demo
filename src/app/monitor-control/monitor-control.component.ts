@@ -13,6 +13,7 @@ import { DataChartComponent } from '../data-chart/data-chart.component';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { MatDialog } from '@angular/material/dialog';
 import { GaugeComponent } from '../gauge/gauge.component';
+import { UtilityModule } from '../utility/utility.module';
 
 export interface Layer {
   name: string;
@@ -57,10 +58,6 @@ export class MonitorControlComponent implements OnInit {
   private stopDate: Date;
   public useDefault = false;
   private isWsOpen = false;
-  private heading = Cesium.Math.toRadians(0);
-  private pitch = Cesium.Math.toRadians(90);
-  private roll = 0;
-  private hpr = new Cesium.HeadingPitchRoll(this.heading, this.pitch, this.roll);
   private previous_sub_position;
 
   layer: Layer = {
@@ -490,7 +487,6 @@ export class MonitorControlComponent implements OnInit {
       this.coord.lat = +msg.lat;
       this.coord.lon = +msg.lon;
       this.coord.alt = +msg.alt;
-
       this.coord.heading = 0;
       this.coord.pitch = 0;
       this.coord.roll = 0;
@@ -513,21 +509,9 @@ export class MonitorControlComponent implements OnInit {
         },
       });
       this.dronesService.updatePosition(this.entity, this.cone, dataCircle, this.coord);
-
       var sub_position = Cesium.Cartesian3.fromDegrees(this.coord.lon + 0.01, this.coord.lat + 0.01, 50);
-      var orientation = Cesium.Transforms.headingPitchRollQuaternion(sub_position, this.hpr);
       this.submarine.position = sub_position;
-      if (this.previous_sub_position != undefined) {
-        var direction = Cesium.Cartesian3.subtract(sub_position, this.previous_sub_position, new Cesium.Cartesian3());
-        if (Cesium.Cartesian3.distance(direction, new Cesium.Cartesian3(0, 0, 0)) != 0) {
-          Cesium.Cartesian3.normalize(direction, direction);
-          var rotationMatrix = Cesium.Transforms.rotationMatrixFromPositionVelocity(this.previous_sub_position, direction);
-          var rot90 = Cesium.Matrix3.fromRotationY(Cesium.Math.toRadians(90));
-          Cesium.Matrix3.multiply(rotationMatrix, rot90, rotationMatrix);
-          orientation = Cesium.Quaternion.fromRotationMatrix(rotationMatrix);
-        }
-      }
-      this.submarine.orientation = orientation;
+      this.submarine.orientation = UtilityModule.Orientation(sub_position, this.previous_sub_position, 90);
       this.previous_sub_position = sub_position;
     });
   }

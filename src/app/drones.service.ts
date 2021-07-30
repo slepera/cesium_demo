@@ -1,39 +1,37 @@
 import { Injectable } from '@angular/core';
 import { Coord } from './coord';
+import { UtilityModule } from './utility/utility.module';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DronesService {
-
+  private drone_previous_position;
   constructor() { }
 
-  updatePosition(entity, cone, dataCircle, coordinates: Coord){
-    var position = new  Cesium.Cartesian3.fromDegrees(
+  updatePosition(entity, cone, dataCircle, coordinates: Coord) {
+    var position = new Cesium.Cartesian3.fromDegrees(
       coordinates.lon,
       coordinates.lat,
       coordinates.alt
     );
-    var conePosition = new  Cesium.Cartesian3.fromDegrees(
+    var conePosition = new Cesium.Cartesian3.fromDegrees(
       coordinates.lon,
       coordinates.lat,
-      coordinates.alt/2
+      coordinates.alt / 2
     );
-    var circlePosition = new  Cesium.Cartesian3.fromDegrees(
+    var circlePosition = new Cesium.Cartesian3.fromDegrees(
       coordinates.lon,
       coordinates.lat,
       70
     );
-    var hpr = new Cesium.HeadingPitchRoll(coordinates.heading, coordinates.pitch, coordinates.roll);
-    var orientation = Cesium.Transforms.headingPitchRollQuaternion(
-      position,
-      hpr
-    );
+    var orientation = UtilityModule.Orientation(position, this.drone_previous_position, 0);
     entity.position = position;
     entity.orientation = orientation;
     dataCircle.position = circlePosition;
     cone.position = conePosition;
     cone.cylinder.length = coordinates.alt;
+    this.drone_previous_position = position;
     //cone.cylinder.bottomRadius = coordinates.alt/2;
   }
 }
