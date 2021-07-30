@@ -41,7 +41,7 @@ export class MonitorControlComponent implements OnInit {
     pitch: 0,
     roll: 0
   }
-      
+
   private platform;
   private submarine;
   private sar;
@@ -55,12 +55,13 @@ export class MonitorControlComponent implements OnInit {
   public dataCircle;
   private startDate: Date;
   private stopDate: Date;
-  public useDefault= false;
+  public useDefault = false;
   private isWsOpen = false;
   private heading = Cesium.Math.toRadians(0);
   private pitch = Cesium.Math.toRadians(90);
-  private roll= 0;
+  private roll = 0;
   private hpr = new Cesium.HeadingPitchRoll(this.heading, this.pitch, this.roll);
+  private previous_sub_position;
 
   layer: Layer = {
     name: 'Layers',
@@ -81,8 +82,8 @@ export class MonitorControlComponent implements OnInit {
   nextPosition: number = 0;
   chartOverlayRef: OverlayRef;
 
-  @ViewChildren(CdkPortal) templatePortals: 
-  QueryList<Portal<any>>;
+  @ViewChildren(CdkPortal) templatePortals:
+    QueryList<Portal<any>>;
   sub2: any;
 
   constructor(private dronesService: DronesService, private dataManager: DataManagerService, public dialog: MatDialog,
@@ -126,7 +127,7 @@ export class MonitorControlComponent implements OnInit {
     this.satService.AddEquatorial(this.mViewer);
     this.satService.AddPolar(this.mViewer);
     this.TimeSet();
-    
+
 
     // Click event to get coordinates
     // scene.canvas.addEventListener('contextmenu', (event) => {
@@ -264,7 +265,7 @@ export class MonitorControlComponent implements OnInit {
       },
       show: true
     });
-    
+
 
     this.sar = new Cesium.CustomDataSource('sar');
     this.multi = new Cesium.CustomDataSource('multi');
@@ -279,7 +280,7 @@ export class MonitorControlComponent implements OnInit {
     this.startDate = new Date();
     this.stopDate = new Date();
 
-    this.stopDate.setDate( this.startDate.getDate() + 1 )
+    this.stopDate.setDate(this.startDate.getDate() + 1)
 
     /* var imageryLayers = this.mViewer.imageryLayers;
     this.sarLayer = imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
@@ -297,7 +298,7 @@ export class MonitorControlComponent implements OnInit {
 
     this.sar.entities.add({
       name: "sarImage",
-      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+      availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
         start: Cesium.JulianDate.fromDate(this.startDate),
         stop: Cesium.JulianDate.fromDate(this.stopDate)
       })]),
@@ -312,13 +313,13 @@ export class MonitorControlComponent implements OnInit {
         material: new Cesium.ImageMaterialProperty({
           image: "../../assets/SarImage.png",
           alpha: 0.5,
-      })
+        })
       },
     })
 
     this.multi.entities.add({
       name: "seaImage",
-      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+      availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
         start: Cesium.JulianDate.fromDate(this.startDate),
         stop: Cesium.JulianDate.fromDate(this.stopDate)
       })]),
@@ -336,7 +337,7 @@ export class MonitorControlComponent implements OnInit {
 
     this.lidar.entities.add({
       name: "oilImage",
-      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+      availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
         start: Cesium.JulianDate.fromDate(this.startDate),
         stop: Cesium.JulianDate.fromDate(this.stopDate)
       })]),
@@ -352,12 +353,12 @@ export class MonitorControlComponent implements OnInit {
       },
     })
 
-    this.startDate.setDate( this.startDate.getDate() + 1 )
-    this.stopDate.setDate( this.stopDate.getDate() + 1 )
+    this.startDate.setDate(this.startDate.getDate() + 1)
+    this.stopDate.setDate(this.stopDate.getDate() + 1)
 
     this.sar.entities.add({
       name: "sarImage1",
-      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+      availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
         start: Cesium.JulianDate.fromDate(this.startDate),
         stop: Cesium.JulianDate.fromDate(this.stopDate)
       })]),
@@ -372,13 +373,13 @@ export class MonitorControlComponent implements OnInit {
         material: new Cesium.ImageMaterialProperty({
           image: "../../assets/SarImage_DAY1.png",
           alpha: 0.5,
-      })
+        })
       },
     })
 
     this.multi.entities.add({
       name: "seaImage1",
-      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+      availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
         start: Cesium.JulianDate.fromDate(this.startDate),
         stop: Cesium.JulianDate.fromDate(this.stopDate)
       })]),
@@ -396,7 +397,7 @@ export class MonitorControlComponent implements OnInit {
 
     this.lidar.entities.add({
       name: "oilImage1",
-      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+      availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
         start: Cesium.JulianDate.fromDate(this.startDate),
         stop: Cesium.JulianDate.fromDate(this.stopDate)
       })]),
@@ -412,11 +413,11 @@ export class MonitorControlComponent implements OnInit {
       },
     })
 
-    this.startDate.setDate( this.startDate.getDate() + 1 )
-    this.stopDate.setDate( this.stopDate.getDate() + 1 )
+    this.startDate.setDate(this.startDate.getDate() + 1)
+    this.stopDate.setDate(this.stopDate.getDate() + 1)
     this.sar.entities.add({
       name: "sarImage2",
-      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+      availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
         start: Cesium.JulianDate.fromDate(this.startDate),
         stop: Cesium.JulianDate.fromDate(this.stopDate)
       })]),
@@ -431,13 +432,13 @@ export class MonitorControlComponent implements OnInit {
         material: new Cesium.ImageMaterialProperty({
           image: "../../assets/SarImage_DAY2.png",
           alpha: 0.5,
-      })
+        })
       },
     })
 
     this.multi.entities.add({
       name: "seaImage2",
-      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+      availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
         start: Cesium.JulianDate.fromDate(this.startDate),
         stop: Cesium.JulianDate.fromDate(this.stopDate)
       })]),
@@ -455,7 +456,7 @@ export class MonitorControlComponent implements OnInit {
 
     this.lidar.entities.add({
       name: "oilImage2",
-      availability: new Cesium.TimeIntervalCollection( [new Cesium.TimeInterval({
+      availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
         start: Cesium.JulianDate.fromDate(this.startDate),
         stop: Cesium.JulianDate.fromDate(this.stopDate)
       })]),
@@ -482,7 +483,6 @@ export class MonitorControlComponent implements OnInit {
     if (myVideo.played) myVideo.pause();
   }
 
-
   webSocketConnect() {
     //Update drone position from websocket data
     this.dataManager.droneConnect();
@@ -490,14 +490,15 @@ export class MonitorControlComponent implements OnInit {
       this.coord.lat = +msg.lat;
       this.coord.lon = +msg.lon;
       this.coord.alt = +msg.alt;
+
       this.coord.heading = 0;
       this.coord.pitch = 0;
       this.coord.roll = 0;
       var colorNum = Math.random();
       var colorSel;
-      if (colorNum<0.33){
+      if (colorNum < 0.33) {
         colorSel = Cesium.Color.YELLOW.withAlpha(0.5);
-      } else if (colorNum<0.67){
+      } else if (colorNum < 0.67) {
         colorSel = Cesium.Color.ORANGE.withAlpha(0.5);
       } else {
         colorSel = Cesium.Color.RED.withAlpha(0.5);
@@ -513,10 +514,21 @@ export class MonitorControlComponent implements OnInit {
       });
       this.dronesService.updatePosition(this.entity, this.cone, dataCircle, this.coord);
 
-      var sub_position = Cesium.Cartesian3.fromDegrees(this.coord.lon+0.01, this.coord.lat+0.01, 50); 
+      var sub_position = Cesium.Cartesian3.fromDegrees(this.coord.lon + 0.01, this.coord.lat + 0.01, 50);
       var orientation = Cesium.Transforms.headingPitchRollQuaternion(sub_position, this.hpr);
       this.submarine.position = sub_position;
+      if (this.previous_sub_position != undefined) {
+        var direction = Cesium.Cartesian3.subtract(sub_position, this.previous_sub_position, new Cesium.Cartesian3());
+        if (Cesium.Cartesian3.distance(direction, new Cesium.Cartesian3(0, 0, 0)) != 0) {
+          Cesium.Cartesian3.normalize(direction, direction);
+          var rotationMatrix = Cesium.Transforms.rotationMatrixFromPositionVelocity(this.previous_sub_position, direction);
+          var rot90 = Cesium.Matrix3.fromRotationY(Cesium.Math.toRadians(90));
+          Cesium.Matrix3.multiply(rotationMatrix, rot90, rotationMatrix);
+          orientation = Cesium.Quaternion.fromRotationMatrix(rotationMatrix);
+        }
+      }
       this.submarine.orientation = orientation;
+      this.previous_sub_position = sub_position;
     });
   }
   startSending() {
@@ -569,8 +581,8 @@ export class MonitorControlComponent implements OnInit {
     var ele;
     this.dataManager.getOrbit("ciao").subscribe(val => {
       val['positions'].forEach(element => {
-        ttPos.addSample(Cesium.JulianDate.fromDate(new Date(element.time*1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromDegrees(element.lon, element.lat, element.ele));
-        ttPosCone.addSample(Cesium.JulianDate.fromDate(new Date(element.time*1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromDegrees(element.lon, element.lat, element.ele/2));
+        ttPos.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromDegrees(element.lon, element.lat, element.ele));
+        ttPosCone.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromDegrees(element.lon, element.lat, element.ele / 2));
       })
       console.log(ttPos);
       ele = val['positions'][0].ele;
@@ -592,7 +604,7 @@ export class MonitorControlComponent implements OnInit {
           leadTime: 0
         }
       });
-  
+
       entities.add({
         position: ttPosCone,
         orientation: new Cesium.VelocityOrientationProperty(ttPosCone),
@@ -608,117 +620,117 @@ export class MonitorControlComponent implements OnInit {
         },
       });
     }
-     
+
     );
 
-    
+
   }
 
-  showImages(ob: MatCheckboxChange){
-  switch(ob.source.id){
-    case 'mat-checkbox-1':{
-      if(ob.checked === true){
-        this.sar.show = true;
-        //this.sarLayer.show = false;
+  showImages(ob: MatCheckboxChange) {
+    switch (ob.source.id) {
+      case 'mat-checkbox-1': {
+        if (ob.checked === true) {
+          this.sar.show = true;
+          //this.sarLayer.show = false;
 
-        this.layer.sublayers.forEach(t => {
-          if (t.name !== 'SAR'){
-            t.completed = false
-          }
-        } )
-        this.lidar.show = false;
-        this.multi.show = false;
-      }else{
-        this.sar.show = false;
-        //this.sarLayer.show = true;
+          this.layer.sublayers.forEach(t => {
+            if (t.name !== 'SAR') {
+              t.completed = false
+            }
+          })
+          this.lidar.show = false;
+          this.multi.show = false;
+        } else {
+          this.sar.show = false;
+          //this.sarLayer.show = true;
+        }
+        break
       }
-      break
-    }
-    case 'mat-checkbox-2':{
-      if(ob.checked === true){
-        this.multi.show = true;
-        this.layer.sublayers.forEach(t => {
-          if (t.name !== 'MULTI'){
-            t.completed = false
-          }
-        } )
-        this.lidar.show = false;
-        this.sar.show = false;
-      }else{
-        this.multi.show = false;
+      case 'mat-checkbox-2': {
+        if (ob.checked === true) {
+          this.multi.show = true;
+          this.layer.sublayers.forEach(t => {
+            if (t.name !== 'MULTI') {
+              t.completed = false
+            }
+          })
+          this.lidar.show = false;
+          this.sar.show = false;
+        } else {
+          this.multi.show = false;
+        }
+        break
       }
-      break
-    }
-    case 'mat-checkbox-3':{
-      if(ob.checked === true){
-        this.lidar.show = true;
+      case 'mat-checkbox-3': {
+        if (ob.checked === true) {
+          this.lidar.show = true;
 
-        this.layer.sublayers.forEach(t => {
-          if (t.name !== 'LIDAR'){
-            t.completed = false
-          }
-        } )
-        this.multi.show = false;
-        this.sar.show = false;
+          this.layer.sublayers.forEach(t => {
+            if (t.name !== 'LIDAR') {
+              t.completed = false
+            }
+          })
+          this.multi.show = false;
+          this.sar.show = false;
 
-      }else{
-        this.lidar.show = false;
+        } else {
+          this.lidar.show = false;
+        }
+        break
       }
-      break
     }
-  }
 
   }
 
 
   public toggle(event: MatSlideToggleChange) {
     console.log('toggle', event.checked);
-    if (event.checked){
+    if (event.checked) {
       this.dataManager.selectedData = event.source.id;
-      if (this.isChecked == true){
+      if (this.isChecked == true) {
         this.closeChartPanel();
-      }else{
+      } else {
         this.startWsChart();
       }
       this.openChart();
-      if(event.source.id == 'temp'){
+      if (event.source.id == 'temp') {
         this.umidChecked = false;
         this.windChecked = false;
         console.log(this.windChecked);
-      }else if(event.source.id == 'umidity'){
+      } else if (event.source.id == 'umidity') {
         this.tempChecked = false;
         this.windChecked = false;
-      }else if(event.source.id == 'wind'){
+      } else if (event.source.id == 'wind') {
         this.tempChecked = false;
         this.umidChecked = false;
       }
       this.isChecked = true;
-    }else{
+    } else {
       this.closeChartPanel();
       this.stopWsChart();
       this.isChecked = false;
     }
-}
+  }
 
-  startWsChart(){
-    if (!this.isWsOpen){
-    this.dataManager.playChart();
-    this.isWsOpen = true;
+  startWsChart() {
+    if (!this.isWsOpen) {
+      this.dataManager.playChart();
+      this.isWsOpen = true;
     }
   }
 
-  goToPlatform(){
+  goToPlatform() {
     //this.mViewer.camera.flyTo({destination: Cesium.Cartesian3.fromDegrees(this.coord.lon, this.coord.lat, 10000)});
     this.mViewer.zoomTo(this.platform);
   }
 
-  stopWsChart(){
+  stopWsChart() {
     this.dataManager.stopChart();
     this.isWsOpen = false;
 
   }
 
-  showGauge(){
+  showGauge() {
     //window.open("http://localhost:4200/gauge/",'window','location=no, toolbar=no, menubar=no, resizable=yes');
     this.startWsChart();
     this.dialog.open(GaugeComponent/* ,{
@@ -727,11 +739,11 @@ export class MonitorControlComponent implements OnInit {
     } */);
   }
 
-  public toggleVideo(event: MatSlideToggleChange){
+  public toggleVideo(event: MatSlideToggleChange) {
     var myVideo: any = document.getElementById("trailer");
-    if (event.checked){
+    if (event.checked) {
       myVideo.hidden = false;
-    }else{
+    } else {
       myVideo.hidden = true;
     }
   }
@@ -740,9 +752,9 @@ export class MonitorControlComponent implements OnInit {
   openChart() {
     let config = new OverlayConfig();
     config.positionStrategy = this.overlay.position()
-        .global()
-        .right(`50px`)
-        .top(`50px`);
+      .global()
+      .right(`50px`)
+      .top(`50px`);
     this.chartOverlayRef = this.overlay.create(config);
     this.chartOverlayRef.attach(new ComponentPortal(DataChartComponent, this.viewContainerRef));
   }
@@ -751,7 +763,7 @@ export class MonitorControlComponent implements OnInit {
     this.chartOverlayRef.dispose();
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.dataManager.OnDestroy();
   }
 }
