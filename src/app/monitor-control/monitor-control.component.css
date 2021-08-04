@@ -6,6 +6,14 @@
   height: 180px;
 }
 
+#trailer_submarine {
+  position: absolute;
+  bottom: 120px;
+  left: 0;
+  width: 320px;
+  height: 180px;
+}
+
 #cesiumContainer {
   width: 100%;
   height: 100%;
@@ -36,12 +44,12 @@
   color: rgba(255, 255, 255, 0);
 }
 
-.my-button{
-  width: 180px!important;
-  min-width: unset!important;
+.my-button {
+  width: 180px !important;
+  min-width: unset !important;
 }
 
-h2{
+h2 {
   text-align: center;
 }
 
@@ -62,13 +70,13 @@ h2{
   width: 180px;
 }
 
-.text-color{
+.text-color {
   color: #fff;
 }
 
 li {
   list-style-type: none;
-  margin-left:  4px;
+  margin-left: 4px;
 }
 
 ul {
@@ -82,8 +90,8 @@ ul {
   font-size: 12px !important;
 }
 
-.central{
-    width:50%;
-    margin-left:25%;
-    margin-right:25%;
+.central {
+  width: 50%;
+  margin-left: 25%;
+  margin-right: 25%;
 }

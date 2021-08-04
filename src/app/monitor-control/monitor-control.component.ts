@@ -114,6 +114,9 @@ export class MonitorControlComponent implements OnInit {
     var myVideo: any = document.getElementById("trailer");
     myVideo.hidden = true;
 
+    var myVideo_submarine: any = document.getElementById("trailer_submarine");
+    myVideo_submarine.hidden = true;
+
     if (!scene.pickPositionSupported) {
       window.alert('This browser does not support pickPosition.');
     }
@@ -480,6 +483,16 @@ export class MonitorControlComponent implements OnInit {
     if (myVideo.played) myVideo.pause();
   }
 
+  playVideoSubmarine() {
+    var myVideo: any = document.getElementById("trailer_submarine");
+    if (myVideo.paused) myVideo.play();
+  }
+
+  pauseVideoSubmarine() {
+    var myVideo: any = document.getElementById("trailer_submarine");
+    if (myVideo.played) myVideo.pause();
+  }
+
   webSocketConnect() {
     //Update drone position from websocket data
     this.dataManager.droneConnect();
@@ -526,6 +539,19 @@ export class MonitorControlComponent implements OnInit {
     var myVideo: any = document.getElementById("trailer");
     if (myVideo.played) myVideo.pause();
   }
+
+  startSendingSubmarine() {
+    this.dataManager.startSending()
+    var myVideo: any = document.getElementById("trailer_submarine");
+    if (myVideo.paused) myVideo.play();
+  }
+
+  stopSendingSubmarine() {
+    this.dataManager.stopSending()
+    var myVideo: any = document.getElementById("trailer_submarine");
+    if (myVideo.played) myVideo.pause();
+  }
+
 
   closeConnection() {
     this.dataManager.closeConnection()
@@ -732,7 +758,14 @@ export class MonitorControlComponent implements OnInit {
     }
   }
 
-
+  public toggleVideoSubmarine(event: MatSlideToggleChange) {
+    var myVideo: any = document.getElementById("trailer_submarine");
+    if (event.checked) {
+      myVideo.hidden = false;
+    } else {
+      myVideo.hidden = true;
+    }
+  }
   openChart() {
     let config = new OverlayConfig();
     config.positionStrategy = this.overlay.position()

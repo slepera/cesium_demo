@@ -93,7 +93,7 @@
         <mat-slide-toggle id = "ph" [(ngModel)]="umidChecked" (change)="toggle($event)" [labelPosition]="'before'">pH</mat-slide-toggle>
       </li>
     </mat-menu>
-  
+
     &nbsp;&nbsp;&nbsp;
     <button mat-button class="my-button" [matMenuTriggerFor]="menu_struct" [color]="'success'" type="submit">Structural Monitoring</button>
     <mat-menu #menu_struct="matMenu" class="customize">
@@ -101,7 +101,7 @@
         <mat-icon>auto_graph</mat-icon>
       </button>
     </mat-menu>
-    
+
     &nbsp;&nbsp;&nbsp;
       <button mat-button [matMenuTriggerFor]="menu_video" [color]="'success'" type="submit">Video</button>
       <mat-menu #menu_video="matMenu" class="customize">
@@ -121,13 +121,13 @@
         &nbsp;&nbsp;&nbsp;
         <li>
           &nbsp;&nbsp;&nbsp;
-          <mat-slide-toggle (change)="toggleVideo($event)" [labelPosition]="'before'">UMS</mat-slide-toggle>
+          <mat-slide-toggle (change)="toggleVideoSubmarine($event)" [labelPosition]="'before'">UMS</mat-slide-toggle>
           &nbsp;&nbsp;&nbsp;
-          <button mat-button (click)="playVideo()">
+          <button mat-button (click)="playVideoSubmarine()">
             <mat-icon>play_circle</mat-icon>
           </button>
           &nbsp;&nbsp;&nbsp;
-          <button mat-button (click)="pauseVideo()">
+          <button mat-button (click)="pauseVideoSubmarine()">
             <mat-icon>pause_circle</mat-icon>
           </button>
           &nbsp;&nbsp;&nbsp;
@@ -146,3 +146,7 @@
   Your browser does not support the <code>video</code> element.
 </video>
 
+<video id="trailer_submarine" muted controls>
+  <source src="http://localhost:8080/video_submarine" type="video/mp4">
+  Your browser does not support the <code>video</code> element.
+</video>

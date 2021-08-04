@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { WebsocketService } from './websocket.service';
 import { Observable, Subject } from "rxjs";
 import { map } from 'rxjs/operators';
@@ -26,19 +26,21 @@ const SOCKET_DRONE_URL = 'ws://localhost:8080/drone_web_socket';
 })
 export class DataManagerService {
   public videoEndpoint: string = 'http://localhost:8080/video';
+  public videoSubmarineEndpoint: string = 'http://localhost:8080/video_submarine';
+
   public orbitEndPoint: string = 'http://localhost:8080/orbit/';
   public chartMessages: Subject<ChartMessage>;
   public droneMessages: Subject<DroneMessage>;
   private cM: Subject<ChartMessage>;
   subsc: any;
   public selectedData: string;
-  
+
   constructor(private http: HttpClient, private chartWsService: WebsocketChartService, private droneWsService: WebsocketService, /* private gaugeComponent: GaugeComponent */) {
-  this.cM = new Subject<ChartMessage>();
-  this.chartMessages = new Subject<ChartMessage>();
-  this.chartConnect();
-}
-  droneConnect(){
+    this.cM = new Subject<ChartMessage>();
+    this.chartMessages = new Subject<ChartMessage>();
+    this.chartConnect();
+  }
+  droneConnect() {
     this.droneMessages = <Subject<DroneMessage>>this.droneWsService.connect(SOCKET_DRONE_URL).pipe(map(
       (response_drone: MessageEvent): DroneMessage => {
         let data = JSON.parse(response_drone.data);
@@ -53,7 +55,7 @@ export class DataManagerService {
     console.log(this.chartWsService);
   }
 
-  chartConnect(){
+  chartConnect() {
     console.log("Chart Connect");
     // this.chartMessages = <Subject<ChartMessage>>this.chartWsService.connect(SOCKET_CHART_URL).pipe(map(
     //   (response: MessageEvent): ChartMessage => {
@@ -88,43 +90,47 @@ export class DataManagerService {
 
   }
 
-  trigger(something){
+  trigger(something) {
     this.chartMessages.next(something);
   }
-  
+
 
 
   // GET request
-  getVideo(){
+  getVideo() {
     return this.http.get(this.videoEndpoint);
   }
 
-  getOrbit(id: string){
+  getVideoSubmarine() {
+    return this.http.get(this.videoSubmarineEndpoint);
+  }
+
+  getOrbit(id: string) {
     return this.http.get(this.orbitEndPoint + id);
   }
 
   //Data receiving from WebSocket: start and stop methods
-  startSending(){
+  startSending() {
     this.droneWsService.send('start');
   }
 
-  stopSending(){
+  stopSending() {
     this.droneWsService.send('stop');
   }
 
-  playChart(){
+  playChart() {
     this.chartWsService.send('start');
   }
 
-  stopChart(){
+  stopChart() {
     this.chartWsService.send('stop');
   }
 
-  closeConnection(){
+  closeConnection() {
     this.droneWsService.close();
   }
 
-  OnDestroy(){
+  OnDestroy() {
     this.chartWsService.close();
   }
 }
