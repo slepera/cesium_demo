@@ -2,15 +2,17 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MonitorControlComponent } from './monitor-control.component';
 
+
 describe('MonitorControlComponent', () => {
   let component: MonitorControlComponent;
   let fixture: ComponentFixture<MonitorControlComponent>;
 
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MonitorControlComponent ]
+      declarations: [MonitorControlComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

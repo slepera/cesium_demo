@@ -50,6 +50,8 @@
     </mat-menu>
     &nbsp;&nbsp;&nbsp;
 
+
+
     <button mat-button [matMenuTriggerFor]="menu_layers" [color]="'success'" type="submit">Layers</button>
       <mat-menu #menu_layers="matMenu" class="customize">
         <li *ngFor="let sublayer of layer.sublayers">
@@ -133,6 +135,14 @@
           &nbsp;&nbsp;&nbsp;
         </li>
       </mat-menu>
+      <mat-toolbar class="flexSpaceBetween" color="primary">
+        <button mat-mini-fab [color]="'success'" aria-label="Example icon button with a plus one icon">
+          <mat-icon class="red-icon">5g</mat-icon>
+        </button>
+      <button mat-mini-fab [color]="'success'"  aria-label="Example icon button with a plus one icon">
+        <mat-icon class="green-icon" [style.background-color]="status == 'SIG_GOOD' ? 'green' : 'red'">cell_wifi</mat-icon>
+      </button>
+    </mat-toolbar>
   </mat-toolbar>
 
 </div>

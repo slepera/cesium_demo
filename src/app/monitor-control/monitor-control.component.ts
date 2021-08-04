@@ -31,6 +31,7 @@ export class MonitorControlComponent implements OnInit {
   @ViewChild("videoPlayer", { static: false }) videoplayer: ElementRef;
   isPlay: boolean = false;
 
+  public status = 'NO_SIG';
 
   private entity;
   public subscription;

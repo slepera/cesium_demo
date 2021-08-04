@@ -58,6 +58,14 @@ h2 {
   color: #fff;
 }
 
+.red-icon {
+  color: red;
+}
+
+.green-icon {
+  color: green;
+}
+
 ::ng-deep .customize {
   background: rgba(0, 128, 0, 0.507);
   color: #fff;
