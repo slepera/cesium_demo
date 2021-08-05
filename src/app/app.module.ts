@@ -28,6 +28,7 @@ import { NgxGaugeModule } from 'ngx-gauge';
 import { GaugeComponent } from './gauge/gauge.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { WebsocketChartService } from './websocket-chart.service';
+import { WebsocketSubmarineService } from './websocket-submarine.service';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,7 @@ import { WebsocketChartService } from './websocket-chart.service';
     MatDialogModule
   ],
   exports: [OverlayModule],
-  providers: [WebsocketService, WebsocketChartService],
+  providers: [WebsocketService, WebsocketChartService, WebsocketSubmarineService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -47,10 +47,51 @@
     </button>
     &nbsp;&nbsp;&nbsp;
     </li>
+    &nbsp;&nbsp;&nbsp;
+    <li>
+      &nbsp;&nbsp;&nbsp;
+      <mat-slide-toggle (change)="toggleVideo($event)"  [labelPosition]="'before'">Video</mat-slide-toggle>
+      &nbsp;&nbsp;&nbsp;
+    </li>
+    &nbsp;&nbsp;&nbsp;
     </mat-menu>
     &nbsp;&nbsp;&nbsp;
 
+    <button mat-button [matMenuTriggerFor]="menu_submarine" [color]="'success'" type="submit">UMS</button>
+    <mat-menu #menu_submarine="matMenu" class="customize_drone">
+      <li>
+        &nbsp;&nbsp;&nbsp;
+        <button mat-button (click)="submarineWsConnect()">
+          <mat-icon svgIcon="socket"></mat-icon>
+        </button>
+        &nbsp;&nbsp;&nbsp;
+        <button mat-button (click)="closeSubmarineConnection()">
+          <mat-icon svgIcon="socket_off"></mat-icon>
+        </button>
+        &nbsp;&nbsp;&nbsp;
+      </li>
+      &nbsp;&nbsp;&nbsp;
+      <li>
+        &nbsp;&nbsp;&nbsp;
 
+    <button mat-button (click)="startSendingSubmarine()">
+      <mat-icon>play_arrow</mat-icon>
+    </button>
+    &nbsp;&nbsp;&nbsp;
+
+    <button mat-button (click)="stopSendingSubmarine()">
+      <mat-icon>stop</mat-icon>
+    </button>
+    &nbsp;&nbsp;&nbsp;
+    </li>
+    &nbsp;&nbsp;&nbsp;
+    <li>
+      &nbsp;&nbsp;&nbsp;
+      <mat-slide-toggle (change)="toggleVideoSubmarine($event)" [labelPosition]="'before'">Video</mat-slide-toggle>
+      &nbsp;&nbsp;&nbsp;
+    </li>
+    </mat-menu>
+    &nbsp;&nbsp;&nbsp;
 
     <button mat-button [matMenuTriggerFor]="menu_layers" [color]="'success'" type="submit">Layers</button>
       <mat-menu #menu_layers="matMenu" class="customize">
@@ -75,24 +116,24 @@
 
     <mat-menu #weather = "matMenu" class = "customize">
         <li>
-          <mat-slide-toggle id = "temp" [(ngModel)]="tempChecked" (change)="toggle($event)"  [labelPosition]="'before'">Temperature</mat-slide-toggle>
+          <mat-slide-toggle id = "air_temperature" [(ngModel)]="tempChecked" (change)="toggle($event)"  [labelPosition]="'before'">Temperature</mat-slide-toggle>
         </li>
         <li>
-          <mat-slide-toggle id = "umidity" [(ngModel)]="umidChecked" (change)="toggle($event)" [labelPosition]="'before'">Umidity</mat-slide-toggle>
+          <mat-slide-toggle id = "air_humidity" [(ngModel)]="humidChecked" (change)="toggle($event)" [labelPosition]="'before'">Humidity</mat-slide-toggle>
         </li>
         <li>
-          <mat-slide-toggle id = "wind" [(ngModel)]="windChecked" (change)="toggle($event)" [labelPosition]="'before'">Wind</mat-slide-toggle>
+          <mat-slide-toggle id = "air_wind" [(ngModel)]="windChecked" (change)="toggle($event)" [labelPosition]="'before'">Wind</mat-slide-toggle>
         </li>
     </mat-menu>
     <mat-menu #water = "matMenu" class = "customize">
       <li>
-        <mat-slide-toggle id = "water_temp" [(ngModel)]="tempChecked" (change)="toggle($event)"  [labelPosition]="'before'">Temperature</mat-slide-toggle>
+        <mat-slide-toggle id = "water_temperature" [(ngModel)]="water_tempChecked" (change)="toggle($event)"  [labelPosition]="'before'">Temperature</mat-slide-toggle>
       </li>
       <li>
-        <mat-slide-toggle id = "salinity" [(ngModel)]="umidChecked" (change)="toggle($event)" [labelPosition]="'before'">Salinity</mat-slide-toggle>
+        <mat-slide-toggle id = "water_salinity" [(ngModel)]="salinityChecked" (change)="toggle($event)" [labelPosition]="'before'">Salinity</mat-slide-toggle>
       </li>
       <li>
-        <mat-slide-toggle id = "ph" [(ngModel)]="umidChecked" (change)="toggle($event)" [labelPosition]="'before'">pH</mat-slide-toggle>
+        <mat-slide-toggle id = "water_ph" [(ngModel)]="phChecked" (change)="toggle($event)" [labelPosition]="'before'">pH</mat-slide-toggle>
       </li>
     </mat-menu>
 
@@ -104,37 +145,8 @@
       </button>
     </mat-menu>
 
-    &nbsp;&nbsp;&nbsp;
-      <button mat-button [matMenuTriggerFor]="menu_video" [color]="'success'" type="submit">Video</button>
-      <mat-menu #menu_video="matMenu" class="customize">
-        <li>
-          &nbsp;&nbsp;&nbsp;
-          <mat-slide-toggle (change)="toggleVideo($event)"  [labelPosition]="'before'">UAV</mat-slide-toggle>
-          &nbsp;&nbsp;&nbsp;
-          <button mat-button (click)="playVideo()" >
-            <mat-icon>play_circle</mat-icon>
-          </button>
-          &nbsp;&nbsp;&nbsp;
-          <button mat-button (click)="pauseVideo()" >
-            <mat-icon>pause_circle</mat-icon>
-          </button>
-          &nbsp;&nbsp;&nbsp;
-        </li>
-        &nbsp;&nbsp;&nbsp;
-        <li>
-          &nbsp;&nbsp;&nbsp;
-          <mat-slide-toggle (change)="toggleVideoSubmarine($event)" [labelPosition]="'before'">UMS</mat-slide-toggle>
-          &nbsp;&nbsp;&nbsp;
-          <button mat-button (click)="playVideoSubmarine()">
-            <mat-icon>play_circle</mat-icon>
-          </button>
-          &nbsp;&nbsp;&nbsp;
-          <button mat-button (click)="pauseVideoSubmarine()">
-            <mat-icon>pause_circle</mat-icon>
-          </button>
-          &nbsp;&nbsp;&nbsp;
-        </li>
-      </mat-menu>
+
+
       <mat-toolbar class="flexSpaceBetween" color="primary">
         <mat-icon *ngIf="five_g_status == 'SIG_OK' else second_5g" [style.color]="'blue'">5g</mat-icon>
         <ng-template #second_5g>
@@ -150,8 +162,8 @@
         <ng-template #third_satcom>
           <mat-icon [style.color]="'red'">cell_wifi</mat-icon>
         </ng-template>
-        <mat-icon [style.color]="drone_status == 'TRANSMITTING' ? 'green' : 'red'">airplanemode_active</mat-icon>
-        <mat-icon [style.color]="submarine_status == 'TRANSMITTING' ? 'green' : 'red'">directions_boat</mat-icon>
+        <mat-icon [style.color]="drone_status == 'TRANSMITTING' ? 'green' : 'grey'">airplanemode_active</mat-icon>
+        <mat-icon [style.color]="submarine_status == 'TRANSMITTING' ? 'green' : 'grey'">directions_boat</mat-icon>
     </mat-toolbar>
   </mat-toolbar>
 

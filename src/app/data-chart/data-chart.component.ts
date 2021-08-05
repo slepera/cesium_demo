@@ -46,6 +46,23 @@ export class DataChartComponent {
     x: 0,
     y: ''
   };
+  private windData: dataType = {
+    x: 0,
+    y: ''
+  };
+  private waterTemperatureData: dataType = {
+    x: 0,
+    y: ''
+  };
+  private waterSalinityData: dataType = {
+    x: 0,
+    y: ''
+  };
+  private waterPhData: dataType = {
+    x: 0,
+    y: ''
+  };
+
   private selectedData: dataType = {
     x: 0,
     y: ''
@@ -63,15 +80,31 @@ export class DataChartComponent {
   bcolor = 'white';
   constructor(private dataManager: DataManagerService) {
     this.selectedType = this.dataManager.selectedData;
-    if (this.selectedType === 'temp') {
-      this.chartName = 'Average Temperature';
-      this.gaugeLabel = "Temperature";
-      this.gaugeAppendText = "°C";
-    } else if (this.selectedType === 'umidity') {
-      this.chartName = 'Umidity';
-      this.gaugeLabel = "Umidity";
-      this.gaugeAppendText = "%";
-    }
+    if (this.selectedType == 'air_temperature') {
+        this.chartName = 'Average Temperature';
+        this.gaugeLabel = "Temperature";
+        this.gaugeAppendText = "°C";
+      } else if (this.selectedType == 'air_humidity') {
+        this.chartName = 'Humidity';
+        this.gaugeLabel = "Humidity";
+        this.gaugeAppendText = "%";
+      } else if (this.selectedType == 'air_wind') {
+        this.chartName = 'Wind';
+        this.gaugeLabel = "Wind speed";
+        this.gaugeAppendText = "km/h";
+      } else if (this.selectedType == 'water_temperature') {
+        this.chartName = 'Water Temperature';
+        this.gaugeLabel = "Temperature";
+        this.gaugeAppendText = "°C";
+      } else if (this.selectedType == 'water_salinity') {
+        this.chartName = 'Water Salinity';
+        this.gaugeLabel = "Salinity";
+        this.gaugeAppendText = "%";
+      } else if (this.selectedType == 'water_ph') {
+        this.chartName = 'pH';
+        this.gaugeLabel = "pH";
+        this.gaugeAppendText = "";
+      }
 
     this.chartOptions = {
       series: [
@@ -152,29 +185,56 @@ export class DataChartComponent {
 
     this.subscription = dataManager.chartMessages.subscribe(msg => {
       n = Number(msg.x);
-      if (msg.msg_type === 'cpu') {
+      if (msg.msg_type === 'air_temperature') {
         this.tempData.x = n;
         this.tempData.y = msg.y;
-      } else if (msg.msg_type === 'mem') {
+      } else if (msg.msg_type === 'air_humidity') {
         this.umidData.x = n;
         this.umidData.y = msg.y;
-      }
+      } else if (msg.msg_type === 'air_wind') {
+        this.windData.x = n;
+        this.windData.y = msg.y;
+      } else if (msg.msg_type === 'water_temperature') {
+        this.waterTemperatureData.x = n;
+        this.waterTemperatureData.y = msg.y;
+      } else if (msg.msg_type === 'water_salinity') {
+        this.waterSalinityData.x = n;
+        this.waterSalinityData.y = msg.y;
+      }  else if (msg.msg_type === 'water_ph') {
+        this.waterPhData.x = n;
+        this.waterPhData.y = msg.y;
+      } 
 
-      if (this.selectedType == 'temp') {
+      if (this.selectedType == 'air_temperature') {
         this.selectedData.x = this.tempData.x;
         this.selectedData.y = this.tempData.y;
-      } else if (this.selectedType == 'umidity') {
+      } else if (this.selectedType == 'air_humidity') {
         this.selectedData.x = this.umidData.x;
         this.selectedData.y = this.umidData.y;
+      } else if (this.selectedType == 'air_wind') {
+        this.selectedData.x = this.windData.x;
+        this.selectedData.y = this.windData.y;
+      } else if (this.selectedType == 'water_temperature') {
+        this.selectedData.x = this.waterTemperatureData.x;
+        this.selectedData.y = this.waterTemperatureData.y;
+      } else if (this.selectedType == 'water_salinity') {
+        this.selectedData.x = this.waterSalinityData.x;
+        this.selectedData.y = this.waterSalinityData.y;
+      } else if (this.selectedType == 'water_ph') {
+        this.selectedData.x = this.waterPhData.x;
+        this.selectedData.y = this.waterPhData.y;
       }
-      this.chartOptions.series = [{
-        data: this.chartOptions.series[0].data.concat({
-          x: this.selectedData.x,
-          y: this.selectedData.y
-        }
-        )
-      }]
-      this.gaugeValue = +this.selectedData.y;
+      if(this.selectedData.y != ''){
+        this.chartOptions.series = [{
+          data: this.chartOptions.series[0].data.concat({
+            x: this.selectedData.x,
+            y: this.selectedData.y
+          }
+          )
+        }]
+        this.gaugeValue = +this.selectedData.y;
+      }
+      
     });
   }
 }

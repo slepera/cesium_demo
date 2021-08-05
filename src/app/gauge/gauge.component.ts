@@ -37,6 +37,7 @@ export class GaugeComponent {
   };
 
   tempValue = 0;
+  waterTempValue=0;
   tempLabel = "Temp";
   tempAppendText = "°C";
 
@@ -58,20 +59,20 @@ export class GaugeComponent {
 
   constructor(private dataManager: DataManagerService) {
     this.subscription = dataManager.chartMessages.subscribe(msg => /* console.log("gauge: "+msg) */{
-    n = +msg.y
-    if(msg.msg_type === 'cpu')
-    {
-      this.tempValue = n/100*50;
+    n = +msg.y;
+    if(msg.msg_type === 'air_temperature'){
+      this.tempValue = n;
+    } else if (msg.msg_type === 'air_humidity'){
+      this.umidValue = n;
+    }else if (msg.msg_type === 'air_wind'){
       this.windValue=n;
-      this.phValue=n/100*14;
+    }else if (msg.msg_type === 'water_temperature'){
+      this.waterTempValue=n;
+    }else if (msg.msg_type === 'water_salinity'){
+      this.salValue=n;
+    }else if (msg.msg_type === 'water_ph'){
+      this.phValue=n;
     }
-
-  if(msg.msg_type === 'mem')
-  {
-    this.umidValue = n;
-    this.salValue = this.umidValue;
-  }
-
    });
   }
 

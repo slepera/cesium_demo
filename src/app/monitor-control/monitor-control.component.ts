@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
+import { Component, ComponentRef, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { Coord } from '../coord';
 import { DataManagerService } from '../data-manager.service';
 import { DronesService } from '../drones.service';
@@ -15,6 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { GaugeComponent } from '../gauge/gauge.component';
 import { UtilityModule } from '../utility/utility.module';
 import { interval } from 'rxjs';
+import { SubmarineService } from '../submarine.service';
 
 export interface Layer {
   name: string;
@@ -37,9 +38,6 @@ export class MonitorControlComponent implements OnInit {
   public drone_status;
   public submarine_status;
 
-
-
-
   private entity;
   public subscription;
   public coord: Coord = {
@@ -51,6 +49,15 @@ export class MonitorControlComponent implements OnInit {
     roll: 0
   }
 
+  public submarineCoord: Coord = {
+    lat: 43.318086546037215,
+    lon: 13.853051325073828,
+    alt: -150,
+    heading: 0,
+    pitch: 0,
+    roll: 0
+  }
+  
   private platform;
   private submarine;
   private sar;
@@ -67,7 +74,7 @@ export class MonitorControlComponent implements OnInit {
   public useDefault = false;
   private isWsOpen = false;
   private previous_sub_position;
-
+  public compRef: ComponentRef<DataChartComponent>;
   layer: Layer = {
     name: 'Layers',
     completed: false,
@@ -78,9 +85,12 @@ export class MonitorControlComponent implements OnInit {
       { name: 'LIDAR', completed: false, color: 'warn' }
     ]
   };
-  umidChecked = false;
+  humidChecked = false;
   tempChecked = false;
   windChecked = false;
+  water_tempChecked = false;
+  salinityChecked = false;
+  phChecked = false;
   isChecked = false;
 
   allComplete: boolean = false;
@@ -90,8 +100,10 @@ export class MonitorControlComponent implements OnInit {
   @ViewChildren(CdkPortal) templatePortals:
     QueryList<Portal<any>>;
   sub2: any;
+  portal: ComponentPortal<DataChartComponent>;
+  submarineSubscription: any;
 
-  constructor(private dronesService: DronesService, private dataManager: DataManagerService, public dialog: MatDialog,
+  constructor(private dronesService: DronesService, private submarineService: SubmarineService, private dataManager: DataManagerService, public dialog: MatDialog,
     private iconService: IconService, private satService: SatelliteService, public overlay: Overlay, public viewContainerRef: ViewContainerRef) {
     this.iconService.registerIcons();
   }
@@ -138,7 +150,7 @@ export class MonitorControlComponent implements OnInit {
 
     interval(3000).subscribe(x => {
       this.dataManager.getSystemStatus().subscribe(val => {
-        console.log(val);
+        //console.log(val);
         this.five_g_status = val['five_g_status'];
         this.satcom_status = val['satcom_status'];
         this.drone_status = val['drone_status'];
@@ -543,32 +555,44 @@ export class MonitorControlComponent implements OnInit {
         },
       });
       this.dronesService.updatePosition(this.entity, this.cone, dataCircle, this.coord);
-      var sub_position = Cesium.Cartesian3.fromDegrees(this.coord.lon + 0.01, this.coord.lat + 0.01, 50);
-      this.submarine.position = sub_position;
-      this.submarine.orientation = UtilityModule.Orientation(sub_position, this.previous_sub_position, 90, 180);
-      this.previous_sub_position = sub_position;
     });
   }
+
+  submarineWsConnect() {
+    //Update drone position from websocket data
+    this.dataManager.submarineConnect();
+    this.submarineSubscription = this.dataManager.submarineMessages.subscribe(msg => {
+      this.submarineCoord.lat = +msg.lat;
+      this.submarineCoord.lon = +msg.lon;
+      this.submarineCoord.alt = +msg.alt;
+      this.submarineCoord.heading = 0;
+      this.submarineCoord.pitch = 0;
+      this.submarineCoord.roll = 0;
+
+      this.submarineService.updatePosition(this.submarine, this.submarineCoord);
+    });
+  }
+
   startSending() {
-    this.dataManager.startSending()
+    this.dataManager.startSending();
     var myVideo: any = document.getElementById("trailer");
     if (myVideo.paused) myVideo.play();
   }
 
   stopSending() {
-    this.dataManager.stopSending()
+    this.dataManager.stopSending();
     var myVideo: any = document.getElementById("trailer");
     if (myVideo.played) myVideo.pause();
   }
 
   startSendingSubmarine() {
-    this.dataManager.startSending()
+    this.dataManager.playSubmarine();
     var myVideo: any = document.getElementById("trailer_submarine");
     if (myVideo.paused) myVideo.play();
   }
 
   stopSendingSubmarine() {
-    this.dataManager.stopSending()
+    this.dataManager.stopSubmarine();
     var myVideo: any = document.getElementById("trailer_submarine");
     if (myVideo.played) myVideo.pause();
   }
@@ -576,6 +600,10 @@ export class MonitorControlComponent implements OnInit {
 
   closeConnection() {
     this.dataManager.closeConnection()
+  }
+
+  closeSubmarineConnection() {
+    this.dataManager.closeSubmarineConnection()
   }
 
 
@@ -722,20 +750,46 @@ export class MonitorControlComponent implements OnInit {
       this.dataManager.selectedData = event.source.id;
       this.startWsChart();
       this.openChart();
-      if (event.source.id == 'temp') {
-        this.umidChecked = false;
+      if (event.source.id == 'air_temperature') {
+        this.humidChecked = false;
         this.windChecked = false;
-        console.log(this.windChecked);
-      } else if (event.source.id == 'umidity') {
+        this.water_tempChecked = false;
+        this.salinityChecked = false;
+        this.phChecked = false;
+      } else if (event.source.id == 'air_humidity') {
         this.tempChecked = false;
         this.windChecked = false;
-      } else if (event.source.id == 'wind') {
+        this.water_tempChecked = false;
+        this.salinityChecked = false;
+        this.phChecked = false;
+      } else if (event.source.id == 'air_wind') {
         this.tempChecked = false;
-        this.umidChecked = false;
+        this.humidChecked = false;
+        this.water_tempChecked = false;
+        this.salinityChecked = false;
+        this.phChecked = false;
+      } else if (event.source.id == 'water_temperature') {
+          this.humidChecked = false;
+          this.windChecked = false;
+          this.tempChecked = false;
+          this.salinityChecked = false;
+          this.phChecked = false;
+      } else if (event.source.id == 'water_salinity') {
+          this.humidChecked = false;
+          this.windChecked = false;
+          this.tempChecked = false;
+          this.water_tempChecked = false;
+          this.phChecked = false;
+      } else if (event.source.id == 'water_ph') {
+          this.humidChecked = false;
+          this.windChecked = false;
+          this.tempChecked = false;
+          this.water_tempChecked = false;
+          this.salinityChecked = false;
       }
-      this.isChecked = true;
-    }
+    this.isChecked = true;
   }
+}
 
   startWsChart() {
     if (!this.isWsOpen) {
@@ -767,8 +821,10 @@ export class MonitorControlComponent implements OnInit {
   public toggleVideo(event: MatSlideToggleChange) {
     var myVideo: any = document.getElementById("trailer");
     if (event.checked) {
+      this.playVideo();
       myVideo.hidden = false;
     } else {
+      this.pauseVideo();
       myVideo.hidden = true;
     }
   }
@@ -776,8 +832,10 @@ export class MonitorControlComponent implements OnInit {
   public toggleVideoSubmarine(event: MatSlideToggleChange) {
     var myVideo: any = document.getElementById("trailer_submarine");
     if (event.checked) {
+      this.playVideoSubmarine();
       myVideo.hidden = false;
     } else {
+      this.pauseVideoSubmarine();
       myVideo.hidden = true;
     }
   }
@@ -788,11 +846,14 @@ export class MonitorControlComponent implements OnInit {
       .right(`50px`)
       .top(`50px`);
     this.chartOverlayRef = this.overlay.create(config);
-    this.chartOverlayRef.attach(new ComponentPortal(DataChartComponent, this.viewContainerRef));
+    this.portal = new ComponentPortal(DataChartComponent, this.viewContainerRef);
+    this.compRef= this.chartOverlayRef.attach(this.portal);
+    //this.chartOverlayRef.attach(this.portal);
   }
 
   closeChartPanel() {
     if (this.chartOverlayRef != undefined) {
+      this.compRef.instance.subscription.unsubscribe();
       this.chartOverlayRef.dispose();
     }
   }

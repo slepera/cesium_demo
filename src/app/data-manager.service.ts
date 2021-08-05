@@ -4,6 +4,7 @@ import { WebsocketService } from './websocket.service';
 import { Observable, Subject } from "rxjs";
 import { map } from 'rxjs/operators';
 import { WebsocketChartService } from './websocket-chart.service';
+import { WebsocketSubmarineService } from './websocket-submarine.service';
 
 export interface DroneMessage {
   lat: string;
@@ -20,6 +21,7 @@ export interface ChartMessage {
 
 const SOCKET_CHART_URL = 'ws://localhost:8080/chart_web_socket';
 const SOCKET_DRONE_URL = 'ws://localhost:8080/drone_web_socket';
+const SOCKET_SUB_URL = 'ws://localhost:8080/submarine_web_socket';
 
 @Injectable({
   providedIn: 'root',
@@ -32,11 +34,12 @@ export class DataManagerService {
   public orbitEndPoint: string = 'http://localhost:8080/orbit/';
   public chartMessages: Subject<ChartMessage>;
   public droneMessages: Subject<DroneMessage>;
+  public submarineMessages: Subject<DroneMessage>;
   private cM: Subject<ChartMessage>;
   subsc: any;
   public selectedData: string;
 
-  constructor(private http: HttpClient, private chartWsService: WebsocketChartService, private droneWsService: WebsocketService, /* private gaugeComponent: GaugeComponent */) {
+  constructor(private http: HttpClient, private chartWsService: WebsocketChartService, private droneWsService: WebsocketService, private submarineWsService: WebsocketSubmarineService) {
     this.cM = new Subject<ChartMessage>();
     this.chartMessages = new Subject<ChartMessage>();
     this.chartConnect();
@@ -53,7 +56,20 @@ export class DataManagerService {
         };
       }
     ));
-    console.log(this.chartWsService);
+  }
+
+  submarineConnect() {
+    this.submarineMessages = <Subject<DroneMessage>>this.submarineWsService.connect(SOCKET_SUB_URL).pipe(map(
+      (response_drone: MessageEvent): DroneMessage => {
+        let data = JSON.parse(response_drone.data);
+        return {
+          lat: data.submarine_msg.lat,
+          lon: data.submarine_msg.lon,
+          alt: data.submarine_msg.alt,
+          time: data.submarine_msg.time
+        };
+      }
+    ));
   }
 
   chartConnect() {
@@ -122,6 +138,14 @@ export class DataManagerService {
     this.droneWsService.send('stop');
   }
 
+  playSubmarine() {
+    this.submarineWsService.send('start');
+  }
+
+  stopSubmarine() {
+    this.submarineWsService.send('stop');
+  }
+
   playChart() {
     this.chartWsService.send('start');
   }
@@ -132,6 +156,10 @@ export class DataManagerService {
 
   closeConnection() {
     this.droneWsService.close();
+  }
+
+  closeSubmarineConnection() {
+    this.submarineWsService.close();
   }
 
   OnDestroy() {
