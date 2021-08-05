@@ -136,12 +136,22 @@
         </li>
       </mat-menu>
       <mat-toolbar class="flexSpaceBetween" color="primary">
-        <button mat-mini-fab [color]="'success'" aria-label="Example icon button with a plus one icon">
-          <mat-icon class="red-icon">5g</mat-icon>
-        </button>
-      <button mat-mini-fab [color]="'success'"  aria-label="Example icon button with a plus one icon">
-        <mat-icon class="green-icon" [style.background-color]="status == 'SIG_GOOD' ? 'green' : 'red'">cell_wifi</mat-icon>
-      </button>
+        <mat-icon *ngIf="five_g_status == 'SIG_OK' else second_5g" [style.color]="'blue'">5g</mat-icon>
+        <ng-template #second_5g>
+          <mat-icon *ngIf="five_g_status == 'SIG_LOW' else third_5g" [style.color]="'green'">5g</mat-icon>
+        </ng-template>
+        <ng-template #third_5g>
+          <mat-icon [style.color]="'red'">5g</mat-icon>
+        </ng-template>
+        <mat-icon *ngIf="satcom_status == 'SIG_OK' else second_satcom" [style.color]="'blue'">cell_wifi</mat-icon>
+        <ng-template #second_satcom>
+          <mat-icon *ngIf="satcom_status == 'SIG_LOW' else third_satcom" [style.color]="'green'">cell_wifi</mat-icon>
+        </ng-template>
+        <ng-template #third_satcom>
+          <mat-icon [style.color]="'red'">cell_wifi</mat-icon>
+        </ng-template>
+        <mat-icon [style.color]="drone_status == 'TRANSMITTING' ? 'green' : 'red'">airplanemode_active</mat-icon>
+        <mat-icon [style.color]="submarine_status == 'TRANSMITTING' ? 'green' : 'red'">directions_boat</mat-icon>
     </mat-toolbar>
   </mat-toolbar>
 

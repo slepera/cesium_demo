@@ -22,7 +22,7 @@ export type ChartOptions = {
   xaxis: ApexXAxis;
   title: ApexTitleSubtitle;
 };
-let k=10;
+let k = 10;
 let n: number;
 @Component({
   selector: 'app-data-chart',
@@ -42,11 +42,11 @@ export class DataChartComponent {
     x: 0,
     y: ''
   };
-  private umidData: dataType= {
+  private umidData: dataType = {
     x: 0,
     y: ''
   };
-  private selectedData: dataType= {
+  private selectedData: dataType = {
     x: 0,
     y: ''
   };
@@ -56,23 +56,23 @@ export class DataChartComponent {
   gaugeType: NgxGaugeType = "arch";
   gaugeValue = 28.3;
   thresholdConfig = {
-    '0': {color: 'green'},
-    '40': {color: 'orange'},
-    '75.5': {color: 'red'}
-};
-bcolor = 'white';
+    '0': { color: 'green' },
+    '40': { color: 'orange' },
+    '75.5': { color: 'red' }
+  };
+  bcolor = 'white';
   constructor(private dataManager: DataManagerService) {
     this.selectedType = this.dataManager.selectedData;
-    if(this.selectedType === 'temp'){
+    if (this.selectedType === 'temp') {
       this.chartName = 'Average Temperature';
       this.gaugeLabel = "Temperature";
       this.gaugeAppendText = "°C";
-    }else if(this.selectedType === 'umidity'){
-      this.chartName =  'Umidity';
+    } else if (this.selectedType === 'umidity') {
+      this.chartName = 'Umidity';
       this.gaugeLabel = "Umidity";
       this.gaugeAppendText = "%";
     }
-    
+
     this.chartOptions = {
       series: [
         {
@@ -82,7 +82,7 @@ bcolor = 'white';
       ],
       chart: {
         id: 'area-datetime',
-        toolbar:{
+        toolbar: {
           show: false,
         },
         type: 'area',
@@ -147,138 +147,34 @@ bcolor = 'white';
         }
       },
       datetimeUTC: true
-      };
-
-
-    this.chartOptions2 = {
-      series: [
-        {
-          name: "My-series",
-          data: []
-        }
-      ],
-      chart: {
-        id: 'area-datetime',
-        type: 'area',
-        height: 350,
-        zoom: {
-          autoScaleYaxis: true
-        }
-      },
-      title: {
-        text: 'Average Humidity',
-        align: 'left'
-      },
-      annotations: {
-        yaxis: [{
-          borderColor: '#999',
-          label: {
-            show: true,
-            text: 'Support',
-            style: {
-              color: "#fff",
-              background: '#00E396'
-            }
-          }
-        }],
-        xaxis: [{
-          borderColor: '#999',
-          yAxisIndex: 0,
-          label: {
-            show: true,
-            text: 'Rally',
-            style: {
-              color: "#fff",
-              background: '#775DD0'
-            }
-          }
-        }]
-      },
-      dataLabels: {
-        enabled: false
-      },
-      markers: {
-        size: 0,
-        style: 'hollow',
-      },
-
-      xaxis: {
-        type: 'datetime',
-      },
-
-      tooltip: {
-        x: {
-          format: 'dd MM yyyy'
-        }
-      },
-      fill: {
-        type: 'gradient',
-        gradient: {
-          shadeIntensity: 1,
-          opacityFrom: 0.7,
-          opacityTo: 0.9,
-          stops: [0, 100]
-        }
-      },
-      datetimeUTC: true
     };
 
 
-// WebSocket usando il servizio websocket.service e data-manager
-//this.dataManager.chartConnect();
+    this.subscription = dataManager.chartMessages.subscribe(msg => {
+      n = Number(msg.x);
+      if (msg.msg_type === 'cpu') {
+        this.tempData.x = n;
+        this.tempData.y = msg.y;
+      } else if (msg.msg_type === 'mem') {
+        this.umidData.x = n;
+        this.umidData.y = msg.y;
+      }
 
-
-
-this.subscription = dataManager.chartMessages.subscribe(msg => {
-    n = +msg.x
-    /* if(msg.msg_type === 'cpu')
-    {
+      if (this.selectedType == 'temp') {
+        this.selectedData.x = this.tempData.x;
+        this.selectedData.y = this.tempData.y;
+      } else if (this.selectedType == 'umidity') {
+        this.selectedData.x = this.umidData.x;
+        this.selectedData.y = this.umidData.y;
+      }
       this.chartOptions.series = [{
         data: this.chartOptions.series[0].data.concat({
-            x: n,
-            y: msg.y
-          }
+          x: this.selectedData.x,
+          y: this.selectedData.y
+        }
         )
       }]
-    }else if(msg.msg_type === 'mem')
-  {
-    this.chartOptions2.series = [{
-      data: this.chartOptions2.series[0].data.concat({
-          x: n,
-          y: msg.y
-        }
-      )
-    }]
-  } */
-  if(msg.msg_type === 'cpu'){
-    this.tempData.x = n;
-    this.tempData.y = msg.y;
-  }else if  (msg.msg_type === 'mem'){
-    this.umidData.x = n;
-    this.umidData.y = msg.y;
+      this.gaugeValue = +this.selectedData.y;
+    });
   }
-
-  if (this.selectedType == 'temp'){
-    this.selectedData.x = this.tempData.x;
-    this.selectedData.y = this.tempData.y;
-  } else if (this.selectedType == 'umidity'){
-    this.selectedData.x = this.umidData.x;
-    this.selectedData.y = this.umidData.y;
-  }
-  this.chartOptions.series = [{
-    data: this.chartOptions.series[0].data.concat({
-        x: this.selectedData.x,
-        y: this.selectedData.y
-      }
-    )
-  }]
-  this.gaugeValue = +this.selectedData.y;
-
-  });
-
-  }
-
-
-
-
 }

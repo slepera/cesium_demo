@@ -25,6 +25,7 @@ const SOCKET_DRONE_URL = 'ws://localhost:8080/drone_web_socket';
   providedIn: 'root',
 })
 export class DataManagerService {
+  public systemStatusEndPoint: string = 'http://localhost:8080/system_status';
   public videoEndpoint: string = 'http://localhost:8080/video';
   public videoSubmarineEndpoint: string = 'http://localhost:8080/video_submarine';
 
@@ -95,6 +96,9 @@ export class DataManagerService {
   }
 
 
+  getSystemStatus() {
+    return this.http.get(this.systemStatusEndPoint);
+  }
 
   // GET request
   getVideo() {

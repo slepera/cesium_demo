@@ -14,6 +14,7 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { MatDialog } from '@angular/material/dialog';
 import { GaugeComponent } from '../gauge/gauge.component';
 import { UtilityModule } from '../utility/utility.module';
+import { interval } from 'rxjs';
 
 export interface Layer {
   name: string;
@@ -31,7 +32,13 @@ export class MonitorControlComponent implements OnInit {
   @ViewChild("videoPlayer", { static: false }) videoplayer: ElementRef;
   isPlay: boolean = false;
 
-  public status = 'NO_SIG';
+  public five_g_status;
+  public satcom_status;
+  public drone_status;
+  public submarine_status;
+
+
+
 
   private entity;
   public subscription;
@@ -128,6 +135,19 @@ export class MonitorControlComponent implements OnInit {
     this.satService.AddEquatorial(this.mViewer);
     this.satService.AddPolar(this.mViewer);
     this.TimeSet();
+
+    interval(3000).subscribe(x => {
+      this.dataManager.getSystemStatus().subscribe(val => {
+        console.log(val);
+        this.five_g_status = val['five_g_status'];
+        this.satcom_status = val['satcom_status'];
+        this.drone_status = val['drone_status'];
+        this.submarine_status = val['submarine_status'];
+      });
+      this.five_g_status
+    });
+
+
 
 
     // Click event to get coordinates
@@ -696,13 +716,11 @@ export class MonitorControlComponent implements OnInit {
 
   public toggle(event: MatSlideToggleChange) {
     console.log('toggle', event.checked);
+    this.closeChartPanel();
+    this.stopWsChart();
     if (event.checked) {
       this.dataManager.selectedData = event.source.id;
-      if (this.isChecked == true) {
-        this.closeChartPanel();
-      } else {
-        this.startWsChart();
-      }
+      this.startWsChart();
       this.openChart();
       if (event.source.id == 'temp') {
         this.umidChecked = false;
@@ -716,10 +734,6 @@ export class MonitorControlComponent implements OnInit {
         this.umidChecked = false;
       }
       this.isChecked = true;
-    } else {
-      this.closeChartPanel();
-      this.stopWsChart();
-      this.isChecked = false;
     }
   }
 
@@ -778,7 +792,9 @@ export class MonitorControlComponent implements OnInit {
   }
 
   closeChartPanel() {
-    this.chartOverlayRef.dispose();
+    if (this.chartOverlayRef != undefined) {
+      this.chartOverlayRef.dispose();
+    }
   }
 
   ngOnDestroy() {
