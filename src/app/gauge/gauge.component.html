@@ -2,32 +2,32 @@
   <h1>Environmental Monitoring</h1>
   <li>
     <h2> Meteorological parameters</h2>
-      <ngx-gauge 
+      <ngx-gauge
       [size]="size"
-      [type]="gaugeType" 
-      [value]="tempValue" 
-      [label]="tempLabel" 
+      [type]="gaugeType"
+      [value]="tempValue"
+      [label]="tempLabel"
       [append]="tempAppendText"
       [thresholds]="thresholdConfigTemp"
       [max] = "50"
       >
     </ngx-gauge>
-  
-    <ngx-gauge 
+
+    <ngx-gauge
       [size]="size"
-      [type]="gaugeType" 
-      [value]="umidValue" 
-      [label]="umidLabel" 
+      [type]="gaugeType"
+      [value]="umidValue"
+      [label]="umidLabel"
       [append]="umidAppendText"
       [thresholds]="thresholdConfig"
       >
     </ngx-gauge>
-  
-    <ngx-gauge 
+
+    <ngx-gauge
       [size]="size"
-      [type]="gaugeType" 
-      [value]="windValue" 
-      [label]="windLabel" 
+      [type]="gaugeType"
+      [value]="windValue"
+      [label]="windLabel"
       [append]="windAppendText"
       [thresholds]="thresholdConfig"
       >
@@ -35,41 +35,41 @@
   </li>
   <li>
     <h2> Water conditions</h2>
-      <ngx-gauge 
+      <ngx-gauge
       [size]="size"
-      [type]="gaugeType" 
-      [value]="waterTempValue" 
-      [label]="tempLabel" 
+      [type]="gaugeType"
+      [value]="waterTempValue"
+      [label]="tempLabel"
       [append]="tempAppendText"
       [thresholds]="thresholdConfigTemp"
-      [max] = "50"
+      [max]="50"
       >
     </ngx-gauge>
-  
-    <ngx-gauge 
+
+    <ngx-gauge
     [size]="size"
-    [type]="gaugeType" 
-    [value]="salValue" 
-    [label]="salLabel" 
+    [type]="gaugeType"
+    [value]="salValue"
+    [label]="salLabel"
     [append]="salAppendText"
     [thresholds]="thresholdConfig"
-      >
+    [max]="5"  >
     </ngx-gauge>
-  
-    <ngx-gauge 
+
+    <ngx-gauge
     [size]="size"
-    [type]="gaugeType" 
-    [value]="phValue" 
-    [label]="phLabel" 
+    [type]="gaugeType"
+    [value]="phValue"
+    [label]="phLabel"
     [append]="phAppendText"
     [thresholds]="thresholdConfigPh"
-    [max] = "14"
+    [max]="14"
       >
     </ngx-gauge>
   </li>
-  
+
   <div mat-dialog-actions class = "footer">
     <button mat-button mat-dialog-close>Close</button>
   </div>
-  
+
 </div>
