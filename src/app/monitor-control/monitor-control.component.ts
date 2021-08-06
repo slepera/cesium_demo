@@ -634,18 +634,29 @@ export class MonitorControlComponent implements OnInit {
     var entities = this.mViewer.entities;
     var ttPos;
     var ttPosCone;
+    var tmp;
     var i = 0;
+    var id = "3";
     ttPos = new Cesium.SampledPositionProperty();
     ttPosCone = new Cesium.SampledPositionProperty();
     var ele;
-    this.dataManager.getOrbit("ciao").subscribe(val => {
+    var sat;
+    this.dataManager.getOrbit(id).subscribe(val => {
       val['positions'].forEach(element => {
-        ttPos.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromDegrees(element.lon, element.lat, element.ele));
-        ttPosCone.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromDegrees(element.lon, element.lat, element.ele / 2));
-      })
+        if(id!=="0"){
+          tmp = new Cesium.Cartographic.fromCartesian( new Cesium.Cartesian3(element.x*1000, element.y*1000, element.z*1000));
+          ttPos.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromRadians(tmp.longitude, tmp.latitude, tmp.height/50));  
+          ttPosCone.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromRadians(tmp.longitude, tmp.latitude, tmp.height / (2*50)));
+        } else {
+          ttPos.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromDegrees(element.lon, element.lat, element.ele));  
+          ttPosCone.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromDegrees(element.lon, element.lat, element.ele / 2));
+        }
+          //console.log( element.x + '   '+ element.y+'   '+element.z);
+          //console.log(element.time + '   ' + tmp.longitude + '   '+tmp.latitude+'   '+tmp.height);
+       })
       console.log(ttPos);
       ele = val['positions'][0].ele;
-      entities.add({
+      sat = entities.add({
         name: 'SAT-1' + Math.random(),
         position: ttPos,
         billboard: {
