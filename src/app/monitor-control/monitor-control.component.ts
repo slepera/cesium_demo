@@ -57,7 +57,7 @@ export class MonitorControlComponent implements OnInit {
     pitch: 0,
     roll: 0
   }
-  
+
   private platform;
   private submarine;
   private sar;
@@ -256,8 +256,8 @@ export class MonitorControlComponent implements OnInit {
       }
     });
     this.platform.position = new Cesium.Cartesian3.fromDegrees(
-      13.853051325073828,
-      43.318086546037215,
+      14.463941,
+      42.768002,
       -150
     );
     //viewer.trackedEntity = this.platform;
@@ -769,27 +769,27 @@ export class MonitorControlComponent implements OnInit {
         this.salinityChecked = false;
         this.phChecked = false;
       } else if (event.source.id == 'water_temperature') {
-          this.humidChecked = false;
-          this.windChecked = false;
-          this.tempChecked = false;
-          this.salinityChecked = false;
-          this.phChecked = false;
+        this.humidChecked = false;
+        this.windChecked = false;
+        this.tempChecked = false;
+        this.salinityChecked = false;
+        this.phChecked = false;
       } else if (event.source.id == 'water_salinity') {
-          this.humidChecked = false;
-          this.windChecked = false;
-          this.tempChecked = false;
-          this.water_tempChecked = false;
-          this.phChecked = false;
+        this.humidChecked = false;
+        this.windChecked = false;
+        this.tempChecked = false;
+        this.water_tempChecked = false;
+        this.phChecked = false;
       } else if (event.source.id == 'water_ph') {
-          this.humidChecked = false;
-          this.windChecked = false;
-          this.tempChecked = false;
-          this.water_tempChecked = false;
-          this.salinityChecked = false;
+        this.humidChecked = false;
+        this.windChecked = false;
+        this.tempChecked = false;
+        this.water_tempChecked = false;
+        this.salinityChecked = false;
       }
-    this.isChecked = true;
+      this.isChecked = true;
+    }
   }
-}
 
   startWsChart() {
     if (!this.isWsOpen) {
@@ -847,7 +847,7 @@ export class MonitorControlComponent implements OnInit {
       .top(`50px`);
     this.chartOverlayRef = this.overlay.create(config);
     this.portal = new ComponentPortal(DataChartComponent, this.viewContainerRef);
-    this.compRef= this.chartOverlayRef.attach(this.portal);
+    this.compRef = this.chartOverlayRef.attach(this.portal);
     //this.chartOverlayRef.attach(this.portal);
   }
 
