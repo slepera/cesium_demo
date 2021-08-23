@@ -16,6 +16,7 @@ import { GaugeComponent } from '../gauge/gauge.component';
 import { UtilityModule } from '../utility/utility.module';
 import { interval } from 'rxjs';
 import { SubmarineService } from '../submarine.service';
+import ReferenceFrame from 'cesium/Source/Core/ReferenceFrame';
 
 export interface Layer {
   name: string;
@@ -629,33 +630,51 @@ export class MonitorControlComponent implements OnInit {
     this.mViewer.clock.shouldAnimate = true;
   }
 
-
-  SinmulateOrbitTimeTagged() {
+  addNewOrbit(){
+    this.SinmulateOrbitTimeTagged('3');
+  }
+  addDefaultOrbit(){
+    this.SinmulateOrbitTimeTagged('0');
+  }
+  
+  SinmulateOrbitTimeTagged(id) {
     var entities = this.mViewer.entities;
     var ttPos;
     var ttPosCone;
     var tmp;
     var i = 0;
-    var id = "3";
-    ttPos = new Cesium.SampledPositionProperty();
+    ttPos = new Cesium.SampledPositionProperty(ReferenceFrame.FIXED);
+    ttPos.setInterpolationOptions({
+      interpolationDegree : 3,
+      interpolationAlgorithm : Cesium.LagrangePolynomialApproximation
+  });
     ttPosCone = new Cesium.SampledPositionProperty();
+    ttPosCone.setInterpolationOptions({
+      interpolationDegree : 3,
+      interpolationAlgorithm : Cesium.LagrangePolynomialApproximation
+  });
     var ele;
     var sat;
     this.dataManager.getOrbit(id).subscribe(val => {
       val['positions'].forEach(element => {
         if(id!=="0"){
-          tmp = new Cesium.Cartographic.fromCartesian( new Cesium.Cartesian3(element.x*1000, element.y*1000, element.z*1000));
-          ttPos.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromRadians(tmp.longitude, tmp.latitude, tmp.height/50));  
-          ttPosCone.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromRadians(tmp.longitude, tmp.latitude, tmp.height / (2*50)));
+          tmp = new Cesium.Cartographic.fromCartesian( new Cesium.Cartesian3(element.x, element.y, element.z));
+          //ttPos.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromRadians(tmp.longitude, tmp.latitude, tmp.height/50));  
+          ttPos.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), new Cesium.Cartesian3(element.x, element.y, element.z));  
+          ttPosCone.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromRadians(tmp.longitude, tmp.latitude, tmp.height/2));
         } else {
-          ttPos.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromDegrees(element.lon, element.lat, element.ele));  
+          //ttPos.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromDegrees(element.lon, element.lat, element.ele));
+          ttPos.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromDegrees(element.lon, element.lat, element.ele ));   
           ttPosCone.addSample(Cesium.JulianDate.fromDate(new Date(element.time * 1000), new Cesium.JulianDate()), Cesium.Cartesian3.fromDegrees(element.lon, element.lat, element.ele / 2));
         }
           //console.log( element.x + '   '+ element.y+'   '+element.z);
           //console.log(element.time + '   ' + tmp.longitude + '   '+tmp.latitude+'   '+tmp.height);
        })
-      console.log(ttPos);
-      ele = val['positions'][0].ele;
+      if (id!="0"){
+        ele = tmp.height;
+      } else {
+        ele = val['positions'][0].ele;
+      }
       sat = entities.add({
         name: 'SAT-1' + Math.random(),
         position: ttPos,
@@ -665,12 +684,9 @@ export class MonitorControlComponent implements OnInit {
         orientation: new Cesium.VelocityOrientationProperty(ttPos),
         path: {
           resolution: 1,
-          material: new Cesium.PolylineGlowMaterialProperty({
-            glowPower: 0.1,
-            color: Cesium.Color.RED
-          }),
-          width: 5,
-          trailTime: 10000,
+          material: Cesium.Color.YELLOW,
+          width: 1,
+          trailTime: 20000,
           leadTime: 0
         }
       });
@@ -683,10 +699,10 @@ export class MonitorControlComponent implements OnInit {
           length: ele,
           topRadius: 0,
           bottomRadius: ele / 10,
-          material: Cesium.Color.RED.withAlpha(.4),
+          material: Cesium.Color.YELLOW.withAlpha(.4),
           outline: !0,
           numberOfVerticalLines: 0,
-          outlineColor: Cesium.Color.RED.withAlpha(.8)
+          outlineColor: Cesium.Color.YELLOW.withAlpha(.8)
         },
       });
     }

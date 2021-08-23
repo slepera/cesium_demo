@@ -13,10 +13,13 @@
     <mat-menu #menu_satellite="matMenu" class="customize">
     &nbsp;&nbsp;&nbsp;
 
-    <button mat-button (click)="SinmulateOrbitTimeTagged()" [color]="'success'" type="submit">
+    <button mat-button (click)="addDefaultOrbit()" [color]="'defaultColor'" type="submit">
       <mat-icon>satellite</mat-icon>
     </button>
     &nbsp;&nbsp;&nbsp;
+    <button mat-button (click)="addNewOrbit()" [color]="'color'" type="submit">
+      <mat-icon>satellite</mat-icon>
+    </button>
     </mat-menu>
     &nbsp;&nbsp;&nbsp;
 

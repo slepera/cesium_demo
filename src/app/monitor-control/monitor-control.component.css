@@ -58,6 +58,16 @@ h2 {
   color: #fff;
 }
 
+.mat-color {
+  background-color: rgba(248, 244, 14, 0.507);
+  color: #fff;
+}
+
+.mat-defaultColor {
+  background-color: rgba(58, 159, 199, 0.507);
+  color: #fff;
+}
+
 .red-icon {
   color: red;
 }
@@ -69,7 +79,7 @@ h2 {
 ::ng-deep .customize {
   background: rgba(0, 128, 0, 0.507);
   color: #fff;
-  width: 150px;
+  width: 180px;
 }
 
 ::ng-deep .customize_drone {
