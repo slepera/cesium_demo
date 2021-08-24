@@ -124,16 +124,24 @@ export class MonitorControlComponent implements OnInit {
     scene.skyAtmosphere.show = true;
     scene.fog.enabled = false;
     scene.globe.showGroundAtmosphere = false;
-    const lat1 = 43.326;
+    /* const lat1 = 43.326;
     const lon1 = 13.793;
     const lat2 = 43.354;
     const lon2 = 13.871;
     const lat3 = 43.306;
     const lon3 = 13.90;
     const lat4 = 43.275;
-    const lon4 = 13.819;
+    const lon4 = 13.819; */
     var myVideo: any = document.getElementById("trailer");
     myVideo.hidden = true;
+    const lat1 = 42.788002;
+    const lon1 = 14.423941;
+    const lat2 = 42.808002;
+    const lon2 = 14.483941;
+    const lat3 = 42.748002;
+    const lon3 = 14.503941;
+    const lat4 = 42.728002;
+    const lon4 = 14.443941;
 
     var myVideo_submarine: any = document.getElementById("trailer_submarine");
     myVideo_submarine.hidden = true;
