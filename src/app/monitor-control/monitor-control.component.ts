@@ -651,13 +651,21 @@ export class MonitorControlComponent implements OnInit {
     var ttPosCone;
     var tmp;
     var i = 0;
-    ttPos = new Cesium.SampledPositionProperty(ReferenceFrame.FIXED);
+    if(id=="0")
+    {
+      ttPos = new Cesium.SampledPositionProperty(ReferenceFrame.FIXED);
+      ttPosCone = new Cesium.SampledPositionProperty(ReferenceFrame.FIXED);
+    }
+    else
+    {
+      ttPos = new Cesium.SampledPositionProperty(ReferenceFrame.INERTIAL);
+      ttPosCone = new Cesium.SampledPositionProperty(ReferenceFrame.INERTIAL);
+    }
     ttPos.setInterpolationOptions({
       interpolationDegree : 3,
       interpolationAlgorithm : Cesium.LagrangePolynomialApproximation
   });
-    ttPosCone = new Cesium.SampledPositionProperty();
-    ttPosCone.setInterpolationOptions({
+      ttPosCone.setInterpolationOptions({
       interpolationDegree : 3,
       interpolationAlgorithm : Cesium.LagrangePolynomialApproximation
   });
