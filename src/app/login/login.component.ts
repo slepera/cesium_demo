@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -9,7 +9,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
+  constructor(private _router: Router) { }
 
   ngOnInit(): void {
   }
@@ -21,6 +21,14 @@ export class LoginComponent implements OnInit {
 
   submit() {
     if (this.form.valid) {
+      if((this.form.value.username=='INSURE')&&(this.form.value.password=='password'))
+      {
+        this._router.navigate(['home']);
+      }
+      else
+      {
+        this.error = "Wrong Username or Password!!!"
+      }
       this.submitEM.emit(this.form.value);
     }
   }
