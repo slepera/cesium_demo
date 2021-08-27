@@ -19,7 +19,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PortalModule } from '@angular/cdk/portal';
 import { OverlayModule } from '@angular/cdk/overlay';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
@@ -29,6 +29,11 @@ import { GaugeComponent } from './gauge/gauge.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { WebsocketChartService } from './websocket-chart.service';
 import { WebsocketSubmarineService } from './websocket-submarine.service';
+import { LoginComponent } from './login/login.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatCardModule} from '@angular/material/card';
+import {MatInputModule} from '@angular/material/input';
+
 
 @NgModule({
   declarations: [
@@ -38,9 +43,16 @@ import { WebsocketSubmarineService } from './websocket-submarine.service';
     MonitorControlComponent,
     CesiumDirective,
     DataChartComponent,
-    GaugeComponent
+    GaugeComponent,
+    LoginComponent
   ],
   imports: [
+    MatCardModule,
+    MatInputModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatCardModule,
     MatCheckboxModule,
     BrowserModule,
     AppRoutingModule,
@@ -60,7 +72,7 @@ import { WebsocketSubmarineService } from './websocket-submarine.service';
     NgxGaugeModule,
     MatDialogModule
   ],
-  exports: [OverlayModule],
+  exports: [MatFormFieldModule, MatCardModule, OverlayModule],
   providers: [WebsocketService, WebsocketChartService, WebsocketSubmarineService],
   bootstrap: [AppComponent]
 })
