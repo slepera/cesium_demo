@@ -6,7 +6,9 @@ import {
   ApexAxisChartSeries,
   ApexChart,
   ApexXAxis,
-  ApexTitleSubtitle
+  ApexTitleSubtitle,
+  ApexYAxis,
+  ApexGrid
 } from "ng-apexcharts";
 import { DataManagerService } from "../data-manager.service";
 import { NgxGaugeType } from "ngx-gauge/gauge/gauge";
@@ -20,6 +22,8 @@ export type ChartOptions = {
   series: ApexAxisChartSeries;
   chart: ApexChart;
   xaxis: ApexXAxis;
+  yaxis: ApexYAxis;
+  grid: ApexGrid;
   title: ApexTitleSubtitle;
 };
 let k = 10;
@@ -50,6 +54,7 @@ export class DataChartComponent {
   gaugeType: NgxGaugeType = "arch";
   gaugeValue = 0;
   thresholdConfig;
+  private chartColor = '#ffffff';//'#e6e040';
   thresholdList = {
     'air_temperature':  {
       '0': {color: 'blue'},
@@ -149,44 +154,32 @@ export class DataChartComponent {
       },
       title: {
         text: this.chartName,
-        align: 'left'
+        align: 'center',
+        style: {
+          color: this.chartColor
+        }
       },
 
-      annotations: {
-        yaxis: [{
-          borderColor: '#999',
-          label: {
-            show: true,
-            text: 'Support',
-            style: {
-              color: "#fff",
-              background: '#00E396'
-            }
-          }
-        }],
-        xaxis: [{
-          borderColor: '#999',
-          yAxisIndex: 0,
-          label: {
-            show: true,
-            text: 'Rally',
-            style: {
-              color: "#fff",
-              background: '#775DD0'
-            }
-          }
-        }]
-      },
       dataLabels: {
         enabled: false
       },
-      markers: {
-        size: 0,
-        style: 'hollow',
-      },
-
       xaxis: {
         type: 'datetime',
+        labels:{
+          style:{
+            colors:this.chartColor
+          }
+        },
+      },
+      yaxis: {
+        labels:{
+          style:{
+            colors:this.chartColor
+          }
+        },
+      },
+      grid:{
+        borderColor: this.chartColor
       },
       tooltip: {
         x: {
