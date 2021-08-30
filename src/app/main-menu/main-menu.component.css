@@ -7,14 +7,18 @@ div {
     width: 228px;
     height: 120px;
     padding-top: 13px;
-    background-color: rgb(22, 9, 201);
-    color: rgb(212, 223, 224);
+    background-color: #86caf8;
+    color: rgb(17, 22, 22);
     cursor: pointer;
   }
   
   .main-menu-button:hover {
-    background-color: #295991;
+    background-color: #5194c0;
     color: white;
   }
+  .mat-icon {
+    vertical-align: middle;
+    transform: scale(2);
+}
   
-  html { background-color: rgb(80, 151, 153); }
+  body { background-color: rgb(172, 250, 169); }
