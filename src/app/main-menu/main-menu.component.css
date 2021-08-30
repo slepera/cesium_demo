@@ -9,6 +9,7 @@ div {
     padding-top: 13px;
     background-color: #86caf8;
     color: rgb(17, 22, 22);
+    font-weight : bold;
     cursor: pointer;
   }
   
