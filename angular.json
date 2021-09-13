@@ -29,22 +29,15 @@
                 "input": "./node_modules/cesium/Build/Cesium",
                 "output": "./assets/cesium"
               },
-              {
-                "glob": "**/*",
-                "input": "./node_modules/cesium/Build/Cesium",
-                "output": "./assets/cesium"
-              },
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
               "./node_modules/cesium/Build/Cesium/Widgets/widgets.css",
-              "./node_modules/cesium/Build/Cesium/Widgets/widgets.css",
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
             "scripts": [
-              "./node_modules/cesium/Build/Cesium/Cesium.js",
               "./node_modules/cesium/Build/Cesium/Cesium.js",
               "node_modules/apexcharts/dist/apexcharts.min.js"
             ]
@@ -109,24 +102,17 @@
                 "input": "./node_modules/cesium/Build/Cesium",
                 "output": "./assets/cesium"
               },
-              {
-                "glob": "**/*",
-                "input": "./node_modules/cesium/Build/Cesium",
-                "output": "./assets/cesium"
-              },
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
-              "./node_modules/cesium/Build/Cesium/Widgets/widgets.css",
-              "./node_modules/cesium/Build/Cesium/Widgets/widgets.css",
+              "./node_modules/cesium/Build/Cesium/Widgets/widgets.css",              
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
             "scripts": [
-              "./node_modules/cesium/Build/Cesium/Cesium.js",
               "./node_modules/cesium/Build/Cesium/Cesium.js"
-            ]
+                        ]
           }
         },
         "lint": {
