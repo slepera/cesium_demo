@@ -17,6 +17,7 @@ import { UtilityModule } from '../utility/utility.module';
 import { interval } from 'rxjs';
 import { SubmarineService } from '../submarine.service';
 import ReferenceFrame from 'cesium/Source/Core/ReferenceFrame';
+import { environment } from 'src/environments/environment';
 
 export interface Layer {
   name: string;
@@ -58,7 +59,8 @@ export class MonitorControlComponent implements OnInit {
     pitch: 0,
     roll: 0
   }
-
+  public drone_video = "http://"+environment.server+':'+environment.port+"/video";
+  public sub_video = "http://"+environment.server+':'+environment.port+"/video_submarine";
   private platform;
   private submarine;
   private sar;

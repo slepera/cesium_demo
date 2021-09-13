@@ -5,7 +5,8 @@ import { Observable, Subject } from "rxjs";
 import { map } from 'rxjs/operators';
 import { WebsocketChartService } from './websocket-chart.service';
 import { WebsocketSubmarineService } from './websocket-submarine.service';
-
+import { environment
+ } from 'src/environments/environment';
 export interface DroneMessage {
   lat: string;
   lon: string;
@@ -19,19 +20,19 @@ export interface ChartMessage {
   y: string;
 }
 
-const SOCKET_CHART_URL = 'ws://localhost:8080/chart_web_socket';
-const SOCKET_DRONE_URL = 'ws://localhost:8080/drone_web_socket';
-const SOCKET_SUB_URL = 'ws://localhost:8080/submarine_web_socket';
+const SOCKET_CHART_URL = 'ws://'+environment.server+':'+environment.port+'/chart_web_socket';
+const SOCKET_DRONE_URL = 'ws://'+environment.server+':'+environment.port+'/drone_web_socket';
+const SOCKET_SUB_URL = 'ws://'+environment.server+':'+environment.port+'/submarine_web_socket';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataManagerService {
-  public systemStatusEndPoint: string = 'http://localhost:8080/system_status';
-  public videoEndpoint: string = 'http://localhost:8080/video';
-  public videoSubmarineEndpoint: string = 'http://localhost:8080/video_submarine';
+  public systemStatusEndPoint: string = 'http://'+environment.server+':'+environment.port+'/system_status';
+  public videoEndpoint: string = 'http://'+environment.server+':'+environment.port+'/video';
+  public videoSubmarineEndpoint: string = 'http://'+environment.server+':'+environment.port+'/video_submarine';
 
-  public orbitEndPoint: string = 'http://localhost:8080/orbit/';
+  public orbitEndPoint: string = 'http://'+environment.server+':'+environment.port+'/orbit/';
   public chartMessages: Subject<ChartMessage>;
   public droneMessages: Subject<DroneMessage>;
   public submarineMessages: Subject<DroneMessage>;
