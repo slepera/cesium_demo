@@ -24,7 +24,7 @@
     "@swimlane/ngx-charts": "^18.0.1",
     "angular-cesium": "0.0.71",
     "apexcharts": "^3.27.1",
-    "cesium": "^1.86.0",
+    "cesium": "^1.88.0",
     "ng-apexcharts": "^1.5.12",
     "ngx-gauge": "^3.0.0",
     "rxjs": "~6.6.0",

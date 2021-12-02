@@ -84,8 +84,8 @@ export class MonitorControlComponent implements OnInit {
     color: 'primary',
     sublayers: [
       { name: 'SAR', completed: false, color: 'primary' },
-      { name: 'MULTI', completed: false, color: 'accent' },
-      { name: 'LIDAR', completed: false, color: 'warn' }
+      { name: 'OPT', completed: false, color: 'accent' },
+      { name: 'MULTI', completed: false, color: 'warn' }
     ]
   };
   humidChecked = false;
@@ -269,9 +269,9 @@ export class MonitorControlComponent implements OnInit {
     this.platform.position = new Cesium.Cartesian3.fromDegrees(
       14.463941,
       42.768002,
-      -150
+      0
     );
-    //viewer.trackedEntity = this.platform;
+    viewer.trackedEntity = this.platform;
 
     //Drone
     this.entity = viewer.entities.add({
@@ -369,13 +369,13 @@ export class MonitorControlComponent implements OnInit {
       })]),
       polygon: {
         hierarchy: Cesium.Cartesian3.fromDegreesArray([
-          lon1, lat1,
-          lon2, lat2,
-          lon3, lat3,
-          lon4, lat4
+          14.4499336522528, 42.7565004427277,
+          14.4499336522528, 42.7782322819063,
+          14.4816306093967, 42.7782322819063,
+          14.4816306093967, 42.7565004427277
         ]),
         height: 50,
-        material: "../../assets/offshore-oil.jpg",
+        material: "../../assets/offshore-oil.png",
       },
     })
 
@@ -387,13 +387,14 @@ export class MonitorControlComponent implements OnInit {
       })]),
       polygon: {
         hierarchy: Cesium.Cartesian3.fromDegreesArray([
-          lon1, lat1,
-          lon2, lat2,
-          lon3, lat3,
-          lon4, lat4
+          13.8893284749483, 42.5907177932852,
+          13.8893284749483, 42.6751,
+          13.979, 42.942915812894,
+          14.5731011663698, 42.942915812894,
+          14.5731011663698, 42.5907177932852
         ]),
-        height: 50,
-        material: "../../assets/SeaImagery.jpeg",
+        height: 350,
+        material: "../../assets/SeaImagery.png",
       },
     })
 
@@ -754,7 +755,7 @@ export class MonitorControlComponent implements OnInit {
         if (ob.checked === true) {
           this.multi.show = true;
           this.layer.sublayers.forEach(t => {
-            if (t.name !== 'MULTI') {
+            if (t.name !== 'OPT') {
               t.completed = false
             }
           })
@@ -770,7 +771,7 @@ export class MonitorControlComponent implements OnInit {
           this.lidar.show = true;
 
           this.layer.sublayers.forEach(t => {
-            if (t.name !== 'LIDAR') {
+            if (t.name !== 'MULTI') {
               t.completed = false
             }
           })
